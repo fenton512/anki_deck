@@ -1,0 +1,27 @@
+/*IDK when i delete this jsonfig.json is screaming on me*/
+:root {
+  --color-background: #282828;
+  --color-green: #34C759;
+}
+
+body {
+  min-height: 100vh;
+  color: #ffffff;
+  background: var(--color-background);
+  line-height: 1.6;
+  font-family:
+    Kreon;
+  font-size: 15px;
+}
+@font-face {
+  font-family: "Krona One";
+  src: url('./fonts/KronaOne-Regular.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: Kreon;
+  src: url(./fonts/Kreon-Regular.ttf);
+  font-weight: normal;
+  font-style: normal;
+}
