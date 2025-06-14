@@ -1,9 +1,23 @@
 <script> 
 import Basebutton from '@/components/Basebutton.vue';
 import router from '@/router';
+import ArrowWithHint from '@/components/ArrowWithHintLeft.vue';
 export default {
+    data() {
+        return {
+            style1: {
+                position: "relative",
+                top: "35%"
+            },
+            style2: {
+                position: "relative",
+                bottom: "17%"
+            }
+        }
+    },
     components: {
-        Basebutton
+        Basebutton,
+        ArrowWithHint
     },
     methods: {
         goToGenerSettings() {
@@ -20,12 +34,12 @@ export default {
     <div class="welcome-page">
         <h1>DANKO’s Anki Deck Generator</h1>
         <div class="mainContent">
-            <div>something</div>
+            <ArrowWithHint :style="style2" :isMirrored="false" :right="20">идеально для начинающих</ArrowWithHint>
             <div class="button-conteiner">
                 <Basebutton :onClick="goToGenerSettings" class="welcome-button"> Генерация на основе популярных слов</Basebutton>
                 <Basebutton :onClick="goToPasteText" class="welcome-button">Генерация на основе текста песни / книги</Basebutton>
             </div>
-            <div>anothe something</div>
+            <ArrowWithHint :isMirrored="true" :style="style1" :right="-18" style="text-align: center;">подойдет тем, кто уже знаком с основами языка</ArrowWithHint>
         </div>
     </div>
 </template>
