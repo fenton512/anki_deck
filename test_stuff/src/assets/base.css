@@ -13,6 +13,9 @@ body {
     Kreon;
   font-size: 15px;
 }
+button {
+  font-family: Kreon;
+}
 @font-face {
   font-family: "Krona One";
   src: url('./fonts/KronaOne-Regular.ttf');
@@ -20,8 +23,8 @@ body {
   font-style: normal;
 }
 @font-face {
-  font-family: Kreon;
-  src: url(./fonts/Kreon-Regular.ttf);
+  font-family: "Kreon";
+  src: url('./fonts/Kreon-Regular.ttf');
   font-weight: normal;
   font-style: normal;
 }
