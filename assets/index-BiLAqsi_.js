@@ -6124,19 +6124,6 @@ function normalizeContainer(container) {
   }
   return container;
 }
-const _export_sfc = (sfc, props) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props) {
-    target[key] = val;
-  }
-  return target;
-};
-const _sfc_main$6 = {};
-function _sfc_render$6(_ctx, _cache) {
-  const _component_router_view = resolveComponent("router-view");
-  return openBlock(), createBlock(_component_router_view);
-}
-const App = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6]]);
 /*!
   * vue-router v4.5.1
   * (c) 2025 Eduardo San Martin Morote
@@ -7993,7 +7980,33 @@ function extractChangingRecords(to, from) {
   }
   return [leavingRecords, updatingRecords, enteringRecords];
 }
-const _sfc_main$5 = {
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
+};
+const _sfc_main$6 = {};
+function _sfc_render$6(_ctx, _cache) {
+  return openBlock(), createElementBlock("h1", null, "This is settings page");
+}
+const GenerSettings = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6]]);
+const _sfc_main$5 = {};
+function _sfc_render$5(_ctx, _cache) {
+  return openBlock(), createElementBlock("h1", null, "This is Paste text page");
+}
+const PasteTextPage = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5]]);
+const routes = [
+  { path: "/", name: "Welcom", component: WelcomPage },
+  { path: "/generSettings", name: "GenerSettings", component: GenerSettings },
+  { path: "/pasteText", name: "PasteText", component: PasteTextPage }
+];
+const router = createRouter({
+  history: createWebHistory("/anki_deck/"),
+  routes
+});
+const _sfc_main$4 = {
   props: {
     onClick: Function
   },
@@ -8003,7 +8016,7 @@ const _sfc_main$5 = {
     }
   }
 };
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("button", {
     onClick: _cache[0] || (_cache[0] = (...args) => $props.onClick && $props.onClick(...args)),
     class: "base-Button"
@@ -8011,8 +8024,8 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default", {}, void 0, true)
   ]);
 }
-const Basebutton = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["__scopeId", "data-v-8b0b97e8"]]);
-const _sfc_main$4 = {};
+const Basebutton = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["__scopeId", "data-v-8b0b97e8"]]);
+const _sfc_main$3 = {};
 const _hoisted_1$2 = {
   width: "157",
   height: "86",
@@ -8020,7 +8033,7 @@ const _hoisted_1$2 = {
   fill: "none",
   xmlns: "http://www.w3.org/2000/svg"
 };
-function _sfc_render$4(_ctx, _cache) {
+function _sfc_render$3(_ctx, _cache) {
   return openBlock(), createElementBlock("svg", _hoisted_1$2, _cache[0] || (_cache[0] = [
     createBaseVNode("path", {
       d: "M1.32536 1.93619C1.32536 2.80379 1.61311 4.83109 8.18769 14.1676C10.9691 18.1175 16.3405 22.1918 30.0107 30.4602C43.6808 38.7285 65.9812 50.67 80.5625 57.9007C95.1439 65.1315 101.33 67.2896 106.891 68.8329C117.092 71.6639 122.955 72.1289 124.551 72.2009C128.765 72.3909 134.29 72.2772 136.47 71.6951C138.798 71.257 141.118 70.9692 143.736 70.7491C144.322 70.6771 144.754 70.5332 146.071 69.5131",
@@ -8042,8 +8055,8 @@ function _sfc_render$4(_ctx, _cache) {
     }, null, -1)
   ]));
 }
-const arrowIconLeft = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4]]);
-const _sfc_main$3 = {
+const arrowIconLeft = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3]]);
+const _sfc_main$2 = {
   components: {
     arrowIconLeft
   },
@@ -8067,7 +8080,7 @@ const _sfc_main$3 = {
   }
 };
 const _hoisted_1$1 = { class: "container" };
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_arrowIconLeft = resolveComponent("arrowIconLeft");
   return openBlock(), createElementBlock("div", _hoisted_1$1, [
     createBaseVNode("span", {
@@ -8081,8 +8094,8 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["style"])
   ]);
 }
-const ArrowWithHint = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3]]);
-const _sfc_main$2 = {
+const ArrowWithHint = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2]]);
+const _sfc_main$1 = {
   data() {
     return {
       style1: {
@@ -8111,7 +8124,7 @@ const _sfc_main$2 = {
 const _hoisted_1 = { class: "welcome-page" };
 const _hoisted_2 = { class: "mainContent" };
 const _hoisted_3 = { class: "button-conteiner" };
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_ArrowWithHint = resolveComponent("ArrowWithHint");
   const _component_Basebutton = resolveComponent("Basebutton");
   return openBlock(), createElementBlock("div", _hoisted_1, [
@@ -8164,24 +8177,11 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ]);
 }
-const WelcomPage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["__scopeId", "data-v-af03bc5b"]]);
-const _sfc_main$1 = {};
-function _sfc_render$1(_ctx, _cache) {
-  return openBlock(), createElementBlock("h1", null, "This is settings page");
-}
-const GenerSettings = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1]]);
+const WelcomPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-af03bc5b"]]);
 const _sfc_main = {};
 function _sfc_render(_ctx, _cache) {
-  return openBlock(), createElementBlock("h1", null, "This is Paste text page");
+  const _component_router_view = resolveComponent("router-view");
+  return openBlock(), createBlock(_component_router_view);
 }
-const PasteTextPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
-const routes = [
-  { path: "/", name: "Welcom", component: WelcomPage },
-  { path: "/generSettings", name: "GenerSettings", component: GenerSettings },
-  { path: "/pasteText", name: "PasteText", component: PasteTextPage }
-];
-const router = createRouter({
-  history: createWebHistory("/anki_deck/"),
-  routes
-});
+const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
 createApp(App).use(router).mount("#app");
