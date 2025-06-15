@@ -6124,6 +6124,19 @@ function normalizeContainer(container) {
   }
   return container;
 }
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
+};
+const _sfc_main$6 = {};
+function _sfc_render$6(_ctx, _cache) {
+  const _component_router_view = resolveComponent("router-view");
+  return openBlock(), createBlock(_component_router_view);
+}
+const App = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6]]);
 /*!
   * vue-router v4.5.1
   * (c) 2025 Eduardo San Martin Morote
@@ -6189,6 +6202,8 @@ function decode(text) {
   }
   return "" + text;
 }
+const TRAILING_SLASH_RE = /\/$/;
+const removeTrailingSlash = (path) => path.replace(TRAILING_SLASH_RE, "");
 function parseURL(parseQuery2, location2, currentLocation = "/") {
   let path, query = {}, searchString = "", hash = "";
   const hashPos = location2.indexOf("#");
@@ -6216,6 +6231,11 @@ function parseURL(parseQuery2, location2, currentLocation = "/") {
 function stringifyURL(stringifyQuery2, location2) {
   const query = location2.query ? stringifyQuery2(location2.query) : "";
   return location2.path + (query && "?") + query + (location2.hash || "");
+}
+function stripBase(pathname, base) {
+  if (!base || !pathname.toLowerCase().startsWith(base.toLowerCase()))
+    return pathname;
+  return pathname.slice(base.length) || "/";
 }
 function isSameRouteLocation(stringifyQuery2, a, b) {
   const aLastIndex = a.matched.length - 1;
@@ -6289,6 +6309,24 @@ var NavigationDirection;
   NavigationDirection2["forward"] = "forward";
   NavigationDirection2["unknown"] = "";
 })(NavigationDirection || (NavigationDirection = {}));
+function normalizeBase(base) {
+  if (!base) {
+    if (isBrowser) {
+      const baseEl = document.querySelector("base");
+      base = baseEl && baseEl.getAttribute("href") || "/";
+      base = base.replace(/^\w+:\/\/[^\/]+/, "");
+    } else {
+      base = "/";
+    }
+  }
+  if (base[0] !== "/" && base[0] !== "#")
+    base = "/" + base;
+  return removeTrailingSlash(base);
+}
+const BEFORE_HASH_RE = /^[^#]+#/;
+function createHref(base, location2) {
+  return base.replace(BEFORE_HASH_RE, "#") + location2;
+}
 function getElementPosition(el, offset) {
   const docRect = document.documentElement.getBoundingClientRect();
   const elRect = el.getBoundingClientRect();
@@ -6333,6 +6371,188 @@ function getSavedScrollPosition(key) {
   const scroll = scrollPositions.get(key);
   scrollPositions.delete(key);
   return scroll;
+}
+let createBaseLocation = () => location.protocol + "//" + location.host;
+function createCurrentLocation(base, location2) {
+  const { pathname, search, hash } = location2;
+  const hashPos = base.indexOf("#");
+  if (hashPos > -1) {
+    let slicePos = hash.includes(base.slice(hashPos)) ? base.slice(hashPos).length : 1;
+    let pathFromHash = hash.slice(slicePos);
+    if (pathFromHash[0] !== "/")
+      pathFromHash = "/" + pathFromHash;
+    return stripBase(pathFromHash, "");
+  }
+  const path = stripBase(pathname, base);
+  return path + search + hash;
+}
+function useHistoryListeners(base, historyState, currentLocation, replace) {
+  let listeners = [];
+  let teardowns = [];
+  let pauseState = null;
+  const popStateHandler = ({ state }) => {
+    const to = createCurrentLocation(base, location);
+    const from = currentLocation.value;
+    const fromState = historyState.value;
+    let delta = 0;
+    if (state) {
+      currentLocation.value = to;
+      historyState.value = state;
+      if (pauseState && pauseState === from) {
+        pauseState = null;
+        return;
+      }
+      delta = fromState ? state.position - fromState.position : 0;
+    } else {
+      replace(to);
+    }
+    listeners.forEach((listener) => {
+      listener(currentLocation.value, from, {
+        delta,
+        type: NavigationType.pop,
+        direction: delta ? delta > 0 ? NavigationDirection.forward : NavigationDirection.back : NavigationDirection.unknown
+      });
+    });
+  };
+  function pauseListeners() {
+    pauseState = currentLocation.value;
+  }
+  function listen(callback) {
+    listeners.push(callback);
+    const teardown = () => {
+      const index = listeners.indexOf(callback);
+      if (index > -1)
+        listeners.splice(index, 1);
+    };
+    teardowns.push(teardown);
+    return teardown;
+  }
+  function beforeUnloadListener() {
+    const { history: history2 } = window;
+    if (!history2.state)
+      return;
+    history2.replaceState(assign({}, history2.state, { scroll: computeScrollPosition() }), "");
+  }
+  function destroy() {
+    for (const teardown of teardowns)
+      teardown();
+    teardowns = [];
+    window.removeEventListener("popstate", popStateHandler);
+    window.removeEventListener("beforeunload", beforeUnloadListener);
+  }
+  window.addEventListener("popstate", popStateHandler);
+  window.addEventListener("beforeunload", beforeUnloadListener, {
+    passive: true
+  });
+  return {
+    pauseListeners,
+    listen,
+    destroy
+  };
+}
+function buildState(back, current, forward, replaced = false, computeScroll = false) {
+  return {
+    back,
+    current,
+    forward,
+    replaced,
+    position: window.history.length,
+    scroll: computeScroll ? computeScrollPosition() : null
+  };
+}
+function useHistoryStateNavigation(base) {
+  const { history: history2, location: location2 } = window;
+  const currentLocation = {
+    value: createCurrentLocation(base, location2)
+  };
+  const historyState = { value: history2.state };
+  if (!historyState.value) {
+    changeLocation(currentLocation.value, {
+      back: null,
+      current: currentLocation.value,
+      forward: null,
+      // the length is off by one, we need to decrease it
+      position: history2.length - 1,
+      replaced: true,
+      // don't add a scroll as the user may have an anchor, and we want
+      // scrollBehavior to be triggered without a saved position
+      scroll: null
+    }, true);
+  }
+  function changeLocation(to, state, replace2) {
+    const hashIndex = base.indexOf("#");
+    const url = hashIndex > -1 ? (location2.host && document.querySelector("base") ? base : base.slice(hashIndex)) + to : createBaseLocation() + base + to;
+    try {
+      history2[replace2 ? "replaceState" : "pushState"](state, "", url);
+      historyState.value = state;
+    } catch (err) {
+      {
+        console.error(err);
+      }
+      location2[replace2 ? "replace" : "assign"](url);
+    }
+  }
+  function replace(to, data) {
+    const state = assign({}, history2.state, buildState(
+      historyState.value.back,
+      // keep back and forward entries but override current position
+      to,
+      historyState.value.forward,
+      true
+    ), data, { position: historyState.value.position });
+    changeLocation(to, state, true);
+    currentLocation.value = to;
+  }
+  function push(to, data) {
+    const currentState = assign(
+      {},
+      // use current history state to gracefully handle a wrong call to
+      // history.replaceState
+      // https://github.com/vuejs/router/issues/366
+      historyState.value,
+      history2.state,
+      {
+        forward: to,
+        scroll: computeScrollPosition()
+      }
+    );
+    changeLocation(currentState.current, currentState, true);
+    const state = assign({}, buildState(currentLocation.value, to, null), { position: currentState.position + 1 }, data);
+    changeLocation(to, state, false);
+    currentLocation.value = to;
+  }
+  return {
+    location: currentLocation,
+    state: historyState,
+    push,
+    replace
+  };
+}
+function createWebHistory(base) {
+  base = normalizeBase(base);
+  const historyNavigation = useHistoryStateNavigation(base);
+  const historyListeners = useHistoryListeners(base, historyNavigation.state, historyNavigation.location, historyNavigation.replace);
+  function go(delta, triggerListeners = true) {
+    if (!triggerListeners)
+      historyListeners.pauseListeners();
+    history.go(delta);
+  }
+  const routerHistory = assign({
+    // it's overridden right after
+    location: "",
+    base,
+    go,
+    createHref: createHref.bind(null, base)
+  }, historyNavigation, historyListeners);
+  Object.defineProperty(routerHistory, "location", {
+    enumerable: true,
+    get: () => historyNavigation.location.value
+  });
+  Object.defineProperty(routerHistory, "state", {
+    enumerable: true,
+    get: () => historyNavigation.state.value
+  });
+  return routerHistory;
 }
 function isRouteLocation(route) {
   return typeof route === "string" || route && typeof route === "object";
@@ -7773,33 +7993,7 @@ function extractChangingRecords(to, from) {
   }
   return [leavingRecords, updatingRecords, enteringRecords];
 }
-const _export_sfc = (sfc, props) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props) {
-    target[key] = val;
-  }
-  return target;
-};
-const _sfc_main$6 = {};
-function _sfc_render$6(_ctx, _cache) {
-  return openBlock(), createElementBlock("h1", null, "This is settings page");
-}
-const GenerSettings = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6]]);
-const _sfc_main$5 = {};
-function _sfc_render$5(_ctx, _cache) {
-  return openBlock(), createElementBlock("h1", null, "This is Paste text page");
-}
-const PasteTextPage = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5]]);
-const routes = [
-  { path: "/", name: "Welcom", component: WelcomPage },
-  { path: "/generSettings", name: "GenerSettings", component: GenerSettings },
-  { path: "/pasteText", name: "PasteText", component: PasteTextPage }
-];
-const router = createRouter({
-  history: createWebHashHistory("/anki_deck/"),
-  routes
-});
-const _sfc_main$4 = {
+const _sfc_main$5 = {
   props: {
     onClick: Function
   },
@@ -7809,7 +8003,7 @@ const _sfc_main$4 = {
     }
   }
 };
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("button", {
     onClick: _cache[0] || (_cache[0] = (...args) => $props.onClick && $props.onClick(...args)),
     class: "base-Button"
@@ -7817,8 +8011,8 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     renderSlot(_ctx.$slots, "default", {}, void 0, true)
   ]);
 }
-const Basebutton = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["__scopeId", "data-v-8b0b97e8"]]);
-const _sfc_main$3 = {};
+const Basebutton = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["__scopeId", "data-v-8b0b97e8"]]);
+const _sfc_main$4 = {};
 const _hoisted_1$2 = {
   width: "157",
   height: "86",
@@ -7826,7 +8020,7 @@ const _hoisted_1$2 = {
   fill: "none",
   xmlns: "http://www.w3.org/2000/svg"
 };
-function _sfc_render$3(_ctx, _cache) {
+function _sfc_render$4(_ctx, _cache) {
   return openBlock(), createElementBlock("svg", _hoisted_1$2, _cache[0] || (_cache[0] = [
     createBaseVNode("path", {
       d: "M1.32536 1.93619C1.32536 2.80379 1.61311 4.83109 8.18769 14.1676C10.9691 18.1175 16.3405 22.1918 30.0107 30.4602C43.6808 38.7285 65.9812 50.67 80.5625 57.9007C95.1439 65.1315 101.33 67.2896 106.891 68.8329C117.092 71.6639 122.955 72.1289 124.551 72.2009C128.765 72.3909 134.29 72.2772 136.47 71.6951C138.798 71.257 141.118 70.9692 143.736 70.7491C144.322 70.6771 144.754 70.5332 146.071 69.5131",
@@ -7848,8 +8042,8 @@ function _sfc_render$3(_ctx, _cache) {
     }, null, -1)
   ]));
 }
-const arrowIconLeft = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3]]);
-const _sfc_main$2 = {
+const arrowIconLeft = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4]]);
+const _sfc_main$3 = {
   components: {
     arrowIconLeft
   },
@@ -7873,7 +8067,7 @@ const _sfc_main$2 = {
   }
 };
 const _hoisted_1$1 = { class: "container" };
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_arrowIconLeft = resolveComponent("arrowIconLeft");
   return openBlock(), createElementBlock("div", _hoisted_1$1, [
     createBaseVNode("span", {
@@ -7887,8 +8081,8 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["style"])
   ]);
 }
-const ArrowWithHint = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2]]);
-const _sfc_main$1 = {
+const ArrowWithHint = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3]]);
+const _sfc_main$2 = {
   data() {
     return {
       style1: {
@@ -7917,7 +8111,7 @@ const _sfc_main$1 = {
 const _hoisted_1 = { class: "welcome-page" };
 const _hoisted_2 = { class: "mainContent" };
 const _hoisted_3 = { class: "button-conteiner" };
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_ArrowWithHint = resolveComponent("ArrowWithHint");
   const _component_Basebutton = resolveComponent("Basebutton");
   return openBlock(), createElementBlock("div", _hoisted_1, [
@@ -7970,11 +8164,24 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ]);
 }
-const WelcomPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-af03bc5b"]]);
+const WelcomPage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["__scopeId", "data-v-af03bc5b"]]);
+const _sfc_main$1 = {};
+function _sfc_render$1(_ctx, _cache) {
+  return openBlock(), createElementBlock("h1", null, "This is settings page");
+}
+const GenerSettings = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1]]);
 const _sfc_main = {};
 function _sfc_render(_ctx, _cache) {
-  const _component_router_view = resolveComponent("router-view");
-  return openBlock(), createBlock(_component_router_view);
+  return openBlock(), createElementBlock("h1", null, "This is Paste text page");
 }
-const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+const PasteTextPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+const routes = [
+  { path: "/", name: "Welcom", component: WelcomPage },
+  { path: "/generSettings", name: "GenerSettings", component: GenerSettings },
+  { path: "/pasteText", name: "PasteText", component: PasteTextPage }
+];
+const router = createRouter({
+  history: createWebHistory("/anki_deck/"),
+  routes
+});
 createApp(App).use(router).mount("#app");
