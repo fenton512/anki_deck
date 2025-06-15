@@ -8176,7 +8176,7 @@ function _sfc_render(_ctx, _cache) {
 }
 const PasteTextPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
 const routes = [
-  { path: "/", name: "Welcom", component: WelcomPage },
+  { path: "/anki_deck", name: "Welcom", component: WelcomPage },
   { path: "/generSettings", name: "GenerSettings", component: GenerSettings },
   { path: "/pasteText", name: "PasteText", component: PasteTextPage }
 ];
