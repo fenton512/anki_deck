@@ -6189,8 +6189,6 @@ function decode(text) {
   }
   return "" + text;
 }
-const TRAILING_SLASH_RE = /\/$/;
-const removeTrailingSlash = (path) => path.replace(TRAILING_SLASH_RE, "");
 function parseURL(parseQuery2, location2, currentLocation = "/") {
   let path, query = {}, searchString = "", hash = "";
   const hashPos = location2.indexOf("#");
@@ -6218,11 +6216,6 @@ function parseURL(parseQuery2, location2, currentLocation = "/") {
 function stringifyURL(stringifyQuery2, location2) {
   const query = location2.query ? stringifyQuery2(location2.query) : "";
   return location2.path + (query && "?") + query + (location2.hash || "");
-}
-function stripBase(pathname, base) {
-  if (!base || !pathname.toLowerCase().startsWith(base.toLowerCase()))
-    return pathname;
-  return pathname.slice(base.length) || "/";
 }
 function isSameRouteLocation(stringifyQuery2, a, b) {
   const aLastIndex = a.matched.length - 1;
@@ -6296,24 +6289,6 @@ var NavigationDirection;
   NavigationDirection2["forward"] = "forward";
   NavigationDirection2["unknown"] = "";
 })(NavigationDirection || (NavigationDirection = {}));
-function normalizeBase(base) {
-  if (!base) {
-    if (isBrowser) {
-      const baseEl = document.querySelector("base");
-      base = baseEl && baseEl.getAttribute("href") || "/";
-      base = base.replace(/^\w+:\/\/[^\/]+/, "");
-    } else {
-      base = "/";
-    }
-  }
-  if (base[0] !== "/" && base[0] !== "#")
-    base = "/" + base;
-  return removeTrailingSlash(base);
-}
-const BEFORE_HASH_RE = /^[^#]+#/;
-function createHref(base, location2) {
-  return base.replace(BEFORE_HASH_RE, "#") + location2;
-}
 function getElementPosition(el, offset) {
   const docRect = document.documentElement.getBoundingClientRect();
   const elRect = el.getBoundingClientRect();
@@ -6358,188 +6333,6 @@ function getSavedScrollPosition(key) {
   const scroll = scrollPositions.get(key);
   scrollPositions.delete(key);
   return scroll;
-}
-let createBaseLocation = () => location.protocol + "//" + location.host;
-function createCurrentLocation(base, location2) {
-  const { pathname, search, hash } = location2;
-  const hashPos = base.indexOf("#");
-  if (hashPos > -1) {
-    let slicePos = hash.includes(base.slice(hashPos)) ? base.slice(hashPos).length : 1;
-    let pathFromHash = hash.slice(slicePos);
-    if (pathFromHash[0] !== "/")
-      pathFromHash = "/" + pathFromHash;
-    return stripBase(pathFromHash, "");
-  }
-  const path = stripBase(pathname, base);
-  return path + search + hash;
-}
-function useHistoryListeners(base, historyState, currentLocation, replace) {
-  let listeners = [];
-  let teardowns = [];
-  let pauseState = null;
-  const popStateHandler = ({ state }) => {
-    const to = createCurrentLocation(base, location);
-    const from = currentLocation.value;
-    const fromState = historyState.value;
-    let delta = 0;
-    if (state) {
-      currentLocation.value = to;
-      historyState.value = state;
-      if (pauseState && pauseState === from) {
-        pauseState = null;
-        return;
-      }
-      delta = fromState ? state.position - fromState.position : 0;
-    } else {
-      replace(to);
-    }
-    listeners.forEach((listener) => {
-      listener(currentLocation.value, from, {
-        delta,
-        type: NavigationType.pop,
-        direction: delta ? delta > 0 ? NavigationDirection.forward : NavigationDirection.back : NavigationDirection.unknown
-      });
-    });
-  };
-  function pauseListeners() {
-    pauseState = currentLocation.value;
-  }
-  function listen(callback) {
-    listeners.push(callback);
-    const teardown = () => {
-      const index = listeners.indexOf(callback);
-      if (index > -1)
-        listeners.splice(index, 1);
-    };
-    teardowns.push(teardown);
-    return teardown;
-  }
-  function beforeUnloadListener() {
-    const { history: history2 } = window;
-    if (!history2.state)
-      return;
-    history2.replaceState(assign({}, history2.state, { scroll: computeScrollPosition() }), "");
-  }
-  function destroy() {
-    for (const teardown of teardowns)
-      teardown();
-    teardowns = [];
-    window.removeEventListener("popstate", popStateHandler);
-    window.removeEventListener("beforeunload", beforeUnloadListener);
-  }
-  window.addEventListener("popstate", popStateHandler);
-  window.addEventListener("beforeunload", beforeUnloadListener, {
-    passive: true
-  });
-  return {
-    pauseListeners,
-    listen,
-    destroy
-  };
-}
-function buildState(back, current, forward, replaced = false, computeScroll = false) {
-  return {
-    back,
-    current,
-    forward,
-    replaced,
-    position: window.history.length,
-    scroll: computeScroll ? computeScrollPosition() : null
-  };
-}
-function useHistoryStateNavigation(base) {
-  const { history: history2, location: location2 } = window;
-  const currentLocation = {
-    value: createCurrentLocation(base, location2)
-  };
-  const historyState = { value: history2.state };
-  if (!historyState.value) {
-    changeLocation(currentLocation.value, {
-      back: null,
-      current: currentLocation.value,
-      forward: null,
-      // the length is off by one, we need to decrease it
-      position: history2.length - 1,
-      replaced: true,
-      // don't add a scroll as the user may have an anchor, and we want
-      // scrollBehavior to be triggered without a saved position
-      scroll: null
-    }, true);
-  }
-  function changeLocation(to, state, replace2) {
-    const hashIndex = base.indexOf("#");
-    const url = hashIndex > -1 ? (location2.host && document.querySelector("base") ? base : base.slice(hashIndex)) + to : createBaseLocation() + base + to;
-    try {
-      history2[replace2 ? "replaceState" : "pushState"](state, "", url);
-      historyState.value = state;
-    } catch (err) {
-      {
-        console.error(err);
-      }
-      location2[replace2 ? "replace" : "assign"](url);
-    }
-  }
-  function replace(to, data) {
-    const state = assign({}, history2.state, buildState(
-      historyState.value.back,
-      // keep back and forward entries but override current position
-      to,
-      historyState.value.forward,
-      true
-    ), data, { position: historyState.value.position });
-    changeLocation(to, state, true);
-    currentLocation.value = to;
-  }
-  function push(to, data) {
-    const currentState = assign(
-      {},
-      // use current history state to gracefully handle a wrong call to
-      // history.replaceState
-      // https://github.com/vuejs/router/issues/366
-      historyState.value,
-      history2.state,
-      {
-        forward: to,
-        scroll: computeScrollPosition()
-      }
-    );
-    changeLocation(currentState.current, currentState, true);
-    const state = assign({}, buildState(currentLocation.value, to, null), { position: currentState.position + 1 }, data);
-    changeLocation(to, state, false);
-    currentLocation.value = to;
-  }
-  return {
-    location: currentLocation,
-    state: historyState,
-    push,
-    replace
-  };
-}
-function createWebHistory(base) {
-  base = normalizeBase(base);
-  const historyNavigation = useHistoryStateNavigation(base);
-  const historyListeners = useHistoryListeners(base, historyNavigation.state, historyNavigation.location, historyNavigation.replace);
-  function go(delta, triggerListeners = true) {
-    if (!triggerListeners)
-      historyListeners.pauseListeners();
-    history.go(delta);
-  }
-  const routerHistory = assign({
-    // it's overridden right after
-    location: "",
-    base,
-    go,
-    createHref: createHref.bind(null, base)
-  }, historyNavigation, historyListeners);
-  Object.defineProperty(routerHistory, "location", {
-    enumerable: true,
-    get: () => historyNavigation.location.value
-  });
-  Object.defineProperty(routerHistory, "state", {
-    enumerable: true,
-    get: () => historyNavigation.state.value
-  });
-  return routerHistory;
 }
 function isRouteLocation(route) {
   return typeof route === "string" || route && typeof route === "object";
@@ -8003,7 +7796,7 @@ const routes = [
   { path: "/pasteText", name: "PasteText", component: PasteTextPage }
 ];
 const router = createRouter({
-  history: createWebHistory("/anki_deck/"),
+  history: createWebHashHistory("/anki_deck/"),
   routes
 });
 const _sfc_main$4 = {
