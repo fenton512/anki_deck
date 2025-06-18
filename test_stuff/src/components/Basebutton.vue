@@ -15,7 +15,9 @@ export default {
 
 <template>
     <button @click="onClick" class="base-Button">
-        <slot />
+        <span class="button-content">
+            <slot />
+        </span>
     </button>
 </template>
 
@@ -24,8 +26,23 @@ export default {
     border: solid white;
     border-radius: 12px;
     border-width: 2px;
+
     color: white;
     background: initial;
-    padding: 0.8em 3% 0.8em 3%;
+    
+    padding: 0.8em 3%;
+    aspect-ratio: 3.3/1;
+
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: "Garamond";
+
+}
+.button-content {
+  display: inline-block;
+  text-align: center;
 }
 </style>

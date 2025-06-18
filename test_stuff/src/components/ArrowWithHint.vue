@@ -11,14 +11,14 @@ export default {
     computed: {
         svgStyle() {
             return  {
-                width: '60%',
-                transform: this.isMirrored ? 'scale(-1,1)': 'none'
+                transform: this.isMirrored ? 'scale(-1,1)': 'none',
+                width: '50%'
             }
         },
         spanStyle() {
             return {
                 position: "relative",
-                right: `${this.right}` + "%"
+                right: `${this.right}` + "%",
             }
         }
     }
