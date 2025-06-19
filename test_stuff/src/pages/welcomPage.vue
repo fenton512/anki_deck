@@ -126,10 +126,11 @@ h1 {
         grid-template-rows: 1fr 2fr 1fr;
     }
     .rightArrow {
-        transform: rotate(299deg);
+        transform: rotate(319deg);
         font-size: 10px;
         width: 35%;
         min-width: min-content;
+        left: 4%;
     }
     .leftArrow {
         transform: rotate(333deg);
