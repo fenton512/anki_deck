@@ -24,7 +24,7 @@ export default {
             router.push({name: 'GenerSettings'});
         },
         goToPasteText() {
-            router.push({name: 'PasteText'});
+            router.push({name: 'Filters'});
         },
         resizeHandler() {
             const query = window.matchMedia('(max-width: 550px)');
@@ -45,7 +45,8 @@ export default {
 
 <template>
     <div class="welcome-page">
-        <h1>DANKO’s Anki Deck Generator</h1>
+        <h1>DANKO’s </h1>
+        <h1>Anki Deck Generator</h1>
         <div class="mainContent">
             <div class="grid-cell">
                 <ArrowWithHint class="leftArrow" :isMirrored="isMobile" :right="secondRight" >идеально для начинающих</ArrowWithHint>
@@ -75,14 +76,18 @@ export default {
 }
 h1 {
     font-family: Krona One;
-    /* font-size: clamp(26px, 3vw, 52px); */
-    font-weight: 400;
+    font-size: 48px;
     text-align: center;
     margin-top: 0%;
-    width: 50%;
+    margin-bottom: 0px;
+
 }
 .mainContent {
     flex-grow: 2;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
     display: grid;
     /* background-color: aqua; */
     grid-template-columns: 1fr 2fr 1fr;
@@ -182,7 +187,7 @@ h1 {
 }
 @media (min-width: 1115px) {
     h1 {
-        font-size: 52px;
+        font-size: 45px;
     }
     .welcome-button {
         width: 60%;
