@@ -86,7 +86,7 @@ h1 {
     flex-grow: 2;
     font-family: "Inter", sans-serif;
     font-optical-sizing: auto;
-    font-weight: 550;
+    font-weight: 570;
     font-style: normal;
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
@@ -190,7 +190,7 @@ h1 {
     }
     .welcome-button {
         width: 60%;
-        font-size: 2rem;
+        font-size: 25px;
     }
     .rightArrow {
         top: 45%;
