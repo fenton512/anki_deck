@@ -89,7 +89,6 @@ h1 {
     font-weight: 300;
     font-style: normal;
     display: grid;
-    /* background-color: aqua; */
     grid-template-columns: 1fr 2fr 1fr;
     justify-items: center;
     align-items: center;
