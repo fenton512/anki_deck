@@ -15,10 +15,10 @@ export default {
 
 <template>
    <main>
-        <div class = "header">Загрузите файл в формате .PDF</div>
+        <div class = "header">Введите текст песни или книги</div>
         <div class = "form-container">
             <form>
-                <textarea id = "text" placeholder="Например: Deftones - Sextape"></textarea>
+                <textarea id = "text" placeholder="Например: To be, or not to be, that is the question. Whether..."></textarea>
             </form>
         </div>
         <BaseButton class = "submit">Сгенерировать деку</BaseButton>
