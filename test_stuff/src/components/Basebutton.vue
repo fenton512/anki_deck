@@ -42,7 +42,7 @@ export default {
     font-optical-sizing: auto;
     font-weight: 300;
     font-style: normal;
-
+    font-size: 15px;
 }
 .button-content {
   display: inline-block;

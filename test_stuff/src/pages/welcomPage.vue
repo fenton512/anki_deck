@@ -24,7 +24,7 @@ export default {
             router.push({name: 'GenerSettings'});
         },
         goToPasteText() {
-            router.push({name: 'Filters'});
+            router.push({name: 'Input'});
         },
         resizeHandler() {
             const query = window.matchMedia('(max-width: 550px)');
@@ -86,7 +86,7 @@ h1 {
     flex-grow: 2;
     font-family: "Inter", sans-serif;
     font-optical-sizing: auto;
-    font-weight: 300;
+    font-weight: 550;
     font-style: normal;
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;

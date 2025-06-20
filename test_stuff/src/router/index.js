@@ -3,7 +3,7 @@ import WelcomPage from '@/pages/welcomPage.vue';
 import GenerSettings from '@/pages/generSetPage.vue';
 import PasteTextPage from '@/pages/pasteTextPage.vue';
 import FinalPage from '@/pages/finalPage.vue';
-import Filters from '@/pages/filters.vue';
+import Input from '@/pages/input.vue';
 
 
 const routes = [
@@ -11,7 +11,7 @@ const routes = [
   { path: '/generSettings', name: 'GenerSettings', component: GenerSettings },
   { path: '/pasteText', name: 'PasteText', component: PasteTextPage },
   { path: '/result', name: 'FinalPage', component: FinalPage},
-  { path: '/filters', name: 'Filters', component: Filters}
+  { path: '/input', name: 'Input', component: Input}
 ];
 
 const router = createRouter({
