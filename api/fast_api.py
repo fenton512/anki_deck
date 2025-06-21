@@ -1,28 +1,41 @@
 from fastapi import FastAPI, Query
 from sqlite3 import connect
 import os
-from .decryptors import *
+from fastapi.middleware.cors import CORSMiddleware
+from decryptors import *
 
 app = FastAPI()
 basedir = os.path.abspath(os.path.dirname(__file__))
-data_file = os.path.join(basedir, 'api/anki_deck.db')
+data_file = os.path.join(basedir, 'anki_deck.db')
 con = connect(data_file)
 cur = con.cursor()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],   # разрешить всем
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/")
+def root():
+    return {"message": "FastAPI работает!"}
 
 @app.get("/user/get")
 async def get_user(login: str):
     ans = {
-    'id': cur.execute("SELECT user_id FROM users WHERE login = ?", (login,)).fetchone()[0],
+    'id': cur.execute("SELECT user_id FROM user WHERE login = ?", (login,)).fetchone()[0],
     'login': login,
-    'encrypted_password': cur.execute("SELECT encrypted_password FROM users WHERE login = ?",
+    'encrypted_password': cur.execute("SELECT encrypted_password FROM user WHERE login = ?",
                                       (login,)).fetchone()[0]
     }
     return ans
 
 
-@app.post("/user/post")
+@app.post("/user/post/{login}/{encrypted_password}")
 async def post_user(login: str, encrypted_password: str):
-    cur.execute("INSERT INTO users (login, encrypted_password) VALUES (?, ?)", (login, encrypted_password))
+    cur.execute("INSERT INTO user (login, encrypted_password) VALUES (?, ?)", (login, encrypted_password))
     con.commit()
     return {"status": 'ok'}
 

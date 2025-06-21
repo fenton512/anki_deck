@@ -5,10 +5,9 @@ import router from '@/router';
 export default {
     data() {
         return {
-            resp: {
-                login: 'uuu',
-                encrypted_password: "17"
-            }
+            pickedWords: new Array(),
+            userText: '',
+            isDone: true,
         }
     },
     mounted() { 
@@ -18,15 +17,39 @@ export default {
     },
     methods: {
         async fatchdata() {
-                const response = await fetch("http://127.0.0.1:8000/user/post/", {
+                this.pickWords();
+                const resp = {
+                    words: this.pickedWords,
+                };
+                const response = await fetch("http://127.0.0.1:8000/wordlist/post", {
                     method: "POST",
                     headers: {
                         'Content-Type' : 'application/json'
                     },
                     body: JSON.stringify(this.resp)
                 })
-            const result = await response.json()
+            const result = await response.json();
+            if (result) {
+                this.isDone = true;
+            }
             console.log(result)
+        },
+        pickWords() {
+            this.pickWords = [];
+            let words = this.userText.split(" ");
+            let length = words.length;
+            for (let i = 0; i < 10; i++) {
+                this.pickedWords.push(words[Math.floor(Math.random() * length)])
+            }
+        },
+        showProccessingTitle() {
+            let div = document.createElement('div');
+            div.innerHTML = "Proccessing...";
+        }
+    },
+    watch: {
+        isDone(newIsDone) {
+
         }
     }
 }
@@ -37,10 +60,10 @@ export default {
         <div class = "header">Введите текст песни или книги</div>
         <div class = "form-container">
             <form>
-                <textarea id = "text" placeholder="Например: To be, or not to be, that is the question. Whether..."></textarea>
+                <textarea id = "text" v-model="userText" placeholder="Например: To be, or not to be, that is the question. Whether..."></textarea>
             </form>
         </div>
-        <BaseButton class = "submit" @click="fatchdata">Сгенерировать деку</BaseButton>
+        <BaseButton class = "submit" @click="showProccessingTitle(); fatchdata()">Сгенерировать деку</BaseButton>
    </main>
 </template>
 
