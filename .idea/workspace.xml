@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="31ea470c-a0c7-49f4-a6a1-c0dea29e598a" name="Changes" comment="API and Database first commit">
+    <list default="true" id="31ea470c-a0c7-49f4-a6a1-c0dea29e598a" name="Changes" comment="First updates">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -46,12 +46,22 @@
     &quot;assignee&quot;: &quot;fishkadealer229&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/fenton512/anki_deck.git&quot;,
-    &quot;accountId&quot;: &quot;94cf38c5-f19a-4a33-855d-cd2106dee827&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/fenton512/anki_deck.git",
+    "accountId": "94cf38c5-f19a-4a33-855d-cd2106dee827"
+  },
+  "recentNewPullRequestHead": {
+    "server": {
+      "useHttp": false,
+      "host": "github.com",
+      "port": null,
+      "suffix": null
+    },
+    "owner": "fenton512",
+    "repository": "anki_deck"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -67,7 +77,8 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "backend",
+    "SHELLCHECK.PATH": "C:\\Users\\nigga\\AppData\\Roaming\\JetBrains\\PyCharm2025.1\\plugins\\Shell Script\\shellcheck.exe",
+    "git-widget-placeholder": "#31 on backend",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -124,7 +135,7 @@
       <updated>1750270139307</updated>
       <workItem from="1750270140353" duration="874000" />
       <workItem from="1750271064887" duration="2609000" />
-      <workItem from="1750276232221" duration="17543000" />
+      <workItem from="1750276232221" duration="18542000" />
     </task>
     <task id="LOCAL-00001" summary="API and Database first commit">
       <option name="closed" value="true" />
@@ -134,7 +145,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750294820868</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="First updates">
+      <option name="closed" value="true" />
+      <created>1750499412504</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1750499412504</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -166,6 +185,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Delete" />
     <MESSAGE value="API and Database first commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="API and Database first commit" />
+    <MESSAGE value="First updates" />
+    <option name="LAST_COMMIT_MESSAGE" value="First updates" />
   </component>
 </project>
