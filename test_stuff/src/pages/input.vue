@@ -17,22 +17,25 @@ export default {
     },
     methods: {
         async fatchdata() {
-                this.pickWords();
-                const resp = {
-                    words: this.pickedWords,
-                };
-                const response = await fetch("http://127.0.0.1:8000/wordlist/post", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type' : 'application/json'
-                    },
-                    body: JSON.stringify(this.resp)
-                })
-            const result = await response.json();
-            if (result) {
-                this.isDone = true;
-            }
-            console.log(result)
+            this.pickWords();
+            const resp = {
+                unknown_words: this.pickedWords,
+            };
+            const response = await fetch("http://127.0.0.1:8000/wordlist/post", {
+                method: "POST",
+                headers: {
+                    'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify(resp),
+            })
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.setAttribute("download", "Anki_deck.csv");
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
         },
         pickWords() {
             this.pickWords = [];
@@ -63,7 +66,7 @@ export default {
                 <textarea id = "text" v-model="userText" placeholder="Например: To be, or not to be, that is the question. Whether..."></textarea>
             </form>
         </div>
-        <BaseButton class = "submit" @click="showProccessingTitle(); fatchdata()">Сгенерировать деку</BaseButton>
+        <BaseButton class = "submit" @click="fatchdata()">Сгенерировать деку</BaseButton>
    </main>
 </template>
 
