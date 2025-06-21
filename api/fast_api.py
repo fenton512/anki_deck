@@ -1,10 +1,6 @@
-import csv
-import io
-
-from fastapi import FastAPI, Query, Request
-from fastapi.responses import StreamingResponse
+from fastapi import FastAPI, Query
 from sqlite3 import connect
-from gpt import request_sentences, parse_response_to_cards, write_cards_to_csv
+from gpt import request_sentences, write_cards_to_csv
 import os
 from fastapi.middleware.cors import CORSMiddleware
 from decryptors import *
@@ -154,5 +150,4 @@ async def post_text(payload: WordListRequest):
     # )
 
     response_text = request_sentences(unknown_words)
-    cards = parse_response_to_cards(response_text)
-    return write_cards_to_csv(cards)
+    return write_cards_to_csv(response_text)

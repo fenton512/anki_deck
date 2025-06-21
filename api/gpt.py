@@ -1,6 +1,6 @@
 from openai import OpenAI
 import io
-from fastapi.responses import StreamingResponse
+from fastapi.responses import PlainTextResponse
 import csv
 
 # Создай клиента с токеном
@@ -15,17 +15,17 @@ def generate_prompt(unknown_words):
 You are a language tutor helping create flashcards for learning English.
 
 Task:
-For each word in the list of unknown words, create **one natural English sentence** that:
+For each word in the list of unknown words, create **three natural English sentences** that:
 - Clearly shows the meaning of the unknown word through context.
-- The sentence must sound natural and be understandable to a learner.
+- Sentences must sound natural and be understandable to a learner.
 - Do NOT define the word; use it in context.
-- Each sentence should be on a new line, prefixed with the word itself like: `word: Sentence`.
+- Each group of sentence should be on a new line, prefixed with the word itself like: `word;Sentence1;Sentence2;Sentence3`.
 
 Unknown words: {', '.join(unknown_words)}
 
 Output:
-One sentence for each unknown word, one per line, formatted as:
-word: Sentence
+Three sentences for each unknown word, all per line, formatted as:
+word;Sentence1;Sentence2;Sentence3
 """.strip()
 
 
@@ -43,26 +43,12 @@ def request_sentences(unknown_words):
     return completion.choices[0].message.content
 
 
-def parse_response_to_cards(response_text):
-    cards = []
-    for line in response_text.strip().split('\n'):
-        if ':' in line:
-            word, sentence = line.split(':', 1)
-            cards.append((word.strip(), sentence.strip()))
-    return cards
 
-
-def write_cards_to_csv(cards):
-    csv_buffer = io.StringIO()
-    writer = csv.writer(csv_buffer)
-    writer.writerow(["Word"])  # заголовок
-    for word in cards:
-        writer.writerow([word])
-
-    csv_buffer.seek(0)
-
-    return StreamingResponse(
-        iter([csv_buffer.getvalue()]),
-        media_type="text/csv",
-        headers={"Content-Disposition": "attachment; filename=random_words.csv"}
-    )
+def write_cards_to_csv(response_text):
+    csv_in_memory = io.StringIO(newline="")
+    fieldnames = ["word", "sentence1", "sentence2", "sentence3"]
+    writer = csv.DictWriter(csv_in_memory, fieldnames=fieldnames)
+    writer.writeheader()
+    for row in response_text:
+        writer.writerow(row)
+    return PlainTextResponse(csv_in_memory.getvalue())
