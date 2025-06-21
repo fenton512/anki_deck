@@ -3,12 +3,31 @@
 import BaseButton from '@/components/Basebutton.vue';
 import router from '@/router';
 export default {
+    data() {
+        return {
+            resp: {
+                login: 'uuu',
+                encrypted_password: "17"
+            }
+        }
+    },
     mounted() { 
     },
     components: {
         BaseButton
     },
     methods: {
+        async fatchdata() {
+                const response = await fetch("http://127.0.0.1:8000/user/post/", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type' : 'application/json'
+                    },
+                    body: JSON.stringify(this.resp)
+                })
+            const result = await response.json()
+            console.log(result)
+        }
     }
 }
 </script>
@@ -21,7 +40,7 @@ export default {
                 <textarea id = "text" placeholder="Например: To be, or not to be, that is the question. Whether..."></textarea>
             </form>
         </div>
-        <BaseButton class = "submit">Сгенерировать деку</BaseButton>
+        <BaseButton class = "submit" @click="fatchdata">Сгенерировать деку</BaseButton>
    </main>
 </template>
 
