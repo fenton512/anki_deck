@@ -15,17 +15,20 @@ def generate_prompt(unknown_words):
 You are a language tutor helping create flashcards for learning English.
 
 Task:
-For each word in the list of unknown words, create **three natural English sentences** that:
+For each word in the list of unknown words, create
+ **translation of this word, three natural English sentences and translation of each of them into Russian** that:
 - Clearly shows the meaning of the unknown word through context.
 - Sentences must sound natural and be understandable to a learner.
 - Do NOT define the word; use it in context.
-- Each group of sentence should be on a new line, prefixed with the word itself like: `word;Sentence1;Sentence2;Sentence3`.
+- Each word, his translation and sentences with their translations should be on a new line,
+ prefixed with the word itself like:
+  `word;word_translation;sentence1;sentence1_translation;sentence2;sentence2_translation;sentence3;sentence3_translation`.
 
 Unknown words: {', '.join(unknown_words)}
 
 Output:
-Three sentences for each unknown word, all per line, formatted as:
-word;Sentence1;Sentence2;Sentence3
+Translation and sentences with their translations for each unknown word, all per line, formatted as:
+word;word_translation;sentence1;sentence1_translation;sentence2;sentence2_translation;sentence3;sentence3_translation
 """.strip()
 
 
@@ -45,7 +48,8 @@ def request_sentences(unknown_words):
 
 def write_cards_to_csv(response_text):
     csv_in_memory = io.StringIO(newline="")
-    fieldnames = ["word", "sentence1", "sentence2", "sentence3"]
+    fieldnames = ["word", "word_translation", "sentence1", "sentence1_translation", "sentence2",
+                  "sentence2_translation", "sentence3", 'sentence3_translation']
     writer = csv.DictWriter(csv_in_memory, fieldnames=fieldnames)
     writer.writeheader()
     for row in response_text:

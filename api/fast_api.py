@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Query
 from sqlite3 import connect
-from gpt import request_sentences, write_cards_to_csv
 import os
 from fastapi.middleware.cors import CORSMiddleware
 from decryptors import *
+from gpt import request_sentences, write_cards_to_csv
 
 app = FastAPI()
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -125,8 +125,7 @@ async def post_word(word: str, translations: str, context_sentence: str, is_impo
     con.commit()
     return {"status": 'ok'}
 
-
 @app.post("/wordlist/post")
-async def post_text(unknown_words: list[str] = Query()):
+async def post_wordlist(unknown_words: list[str] = Query()):
     response_text = request_sentences(unknown_words)
     return write_cards_to_csv(response_text)
