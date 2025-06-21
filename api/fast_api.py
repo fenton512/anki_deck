@@ -1,5 +1,10 @@
-from fastapi import FastAPI, Query
+import csv
+import io
+
+from fastapi import FastAPI, Query, Request
+from fastapi.responses import StreamingResponse
 from sqlite3 import connect
+from gpt import request_sentences, parse_response_to_cards, write_cards_to_csv
 import os
 from decryptors import *
 
@@ -110,3 +115,10 @@ async def post_word(word: str, translations: str, context_sentence: str, is_impo
         cur.execute("INSERT INTO unwanted_words (word_id) VALUES (?)", (word_id,))
     con.commit()
     return {"status": 'ok'}
+
+
+@app.post("/wordlist/post")
+async def post_text(unknown_words: list[str] = Query()):
+    response_text = request_sentences(unknown_words)
+    cards = parse_response_to_cards(response_text)
+    return write_cards_to_csv(cards)
