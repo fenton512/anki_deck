@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Query
 from sqlite3 import connect
-from gpt import request_sentences, write_cards_to_csv
+from gpt import request_sentences, write_cards_to_csv, parse_response_to_dicts
 import os
 from fastapi.middleware.cors import CORSMiddleware
 from decryptors import *
@@ -13,9 +13,10 @@ data_file = os.path.join(basedir, 'anki_deck.db')
 con = connect(data_file)
 cur = con.cursor()
 
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -133,21 +134,6 @@ class WordListRequest(BaseModel):
 @app.post("/wordlist/post")
 async def post_text(payload: WordListRequest):
     unknown_words = payload.unknown_words
-
-    # csv_buffer = io.StringIO()
-    # writer = csv.writer(csv_buffer)
-    # writer.writerow(["Word"])
-
-    # for word in unknown_words:
-    #     writer.writerow([word])
-
-    # csv_buffer.seek(0)
-
-    # return StreamingResponse(
-    #     iter([csv_buffer.getvalue()]),
-    #     media_type="text/csv",
-    #     headers={"Content-Disposition": "attachment; filename=Anki_deck.csv"}
-    # )
-
     response_text = request_sentences(unknown_words)
-    return write_cards_to_csv(response_text)
+    rows = parse_response_to_dicts(response_text)
+    return write_cards_to_csv(rows)

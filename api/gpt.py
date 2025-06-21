@@ -6,7 +6,7 @@ import csv
 # Создай клиента с токеном
 client = OpenAI(
     # замените на свой ключ
-    api_key="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"
+    api_key="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"
 )
 
 
@@ -41,6 +41,19 @@ def request_sentences(unknown_words):
     )
 
     return completion.choices[0].message.content
+
+def parse_response_to_dicts(response_text):
+    rows = []
+    for line in response_text.strip().split('\n'):
+        parts = line.split(';')
+        if len(parts) == 4:
+            rows.append({
+                "word": parts[0],
+                "sentence1": parts[1],
+                "sentence2": parts[2],
+                "sentence3": parts[3],
+            })
+    return rows
 
 
 

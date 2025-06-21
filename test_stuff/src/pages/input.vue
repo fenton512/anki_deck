@@ -38,7 +38,7 @@ export default {
             a.remove();
         },
         pickWords() {
-            this.pickWords = [];
+            this.pickedWords = [];
             let words = this.userText.split(" ");
             let length = words.length;
             for (let i = 0; i < 10; i++) {
