@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Query
 from sqlite3 import connect
 import os
-from decryptors import *
+from .decryptors import *
 
 app = FastAPI()
 basedir = os.path.abspath(os.path.dirname(__file__))
