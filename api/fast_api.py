@@ -1,16 +1,12 @@
-import csv
-import io
-
-from fastapi import FastAPI, Query, Request
-from fastapi.responses import StreamingResponse
+from fastapi import FastAPI, Query
 from sqlite3 import connect
-from gpt import request_sentences, parse_response_to_cards, write_cards_to_csv
+from gpt import request_sentences, write_cards_to_csv
 import os
 from decryptors import *
 
 app = FastAPI()
 basedir = os.path.abspath(os.path.dirname(__file__))
-data_file = os.path.join(basedir, 'api/anki_deck.db')
+data_file = os.path.join(basedir, 'anki_deck.db')
 con = connect(data_file)
 cur = con.cursor()
 
@@ -120,5 +116,4 @@ async def post_word(word: str, translations: str, context_sentence: str, is_impo
 @app.post("/wordlist/post")
 async def post_text(unknown_words: list[str] = Query()):
     response_text = request_sentences(unknown_words)
-    cards = parse_response_to_cards(response_text)
-    return write_cards_to_csv(cards)
+    return write_cards_to_csv(response_text)
