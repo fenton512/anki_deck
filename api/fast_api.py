@@ -8,6 +8,8 @@ from gpt import request_sentences, parse_response_to_cards, write_cards_to_csv
 import os
 from fastapi.middleware.cors import CORSMiddleware
 from decryptors import *
+from pydantic import BaseModel
+from typing import List
 
 app = FastAPI()
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -17,7 +19,7 @@ cur = con.cursor()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # разрешить всем
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -129,9 +131,28 @@ async def post_word(word: str, translations: str, context_sentence: str, is_impo
     con.commit()
     return {"status": 'ok'}
 
+class WordListRequest(BaseModel):
+    unknown_words: List[str]
 
 @app.post("/wordlist/post")
-async def post_text(unknown_words: list[str] = Query()):
+async def post_text(payload: WordListRequest):
+    unknown_words = payload.unknown_words
+
+    # csv_buffer = io.StringIO()
+    # writer = csv.writer(csv_buffer)
+    # writer.writerow(["Word"])
+
+    # for word in unknown_words:
+    #     writer.writerow([word])
+
+    # csv_buffer.seek(0)
+
+    # return StreamingResponse(
+    #     iter([csv_buffer.getvalue()]),
+    #     media_type="text/csv",
+    #     headers={"Content-Disposition": "attachment; filename=Anki_deck.csv"}
+    # )
+
     response_text = request_sentences(unknown_words)
     cards = parse_response_to_cards(response_text)
     return write_cards_to_csv(cards)
