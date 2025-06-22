@@ -7,6 +7,7 @@ from decryptors import *
 from pydantic import BaseModel
 from typing import List
 
+
 app = FastAPI()
 basedir = os.path.abspath(os.path.dirname(__file__))
 data_file = os.path.join(basedir, 'anki_deck.db')
@@ -137,3 +138,4 @@ async def post_text(payload: WordListRequest):
     response_text = request_sentences(unknown_words)
     rows = parse_response_to_dicts(response_text)
     return write_cards_to_csv(rows)
+

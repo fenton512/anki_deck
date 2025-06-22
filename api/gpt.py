@@ -15,19 +15,19 @@ def generate_prompt(unknown_words):
 You are a language tutor helping create flashcards for learning English.
 
 Task:
-For each word in the list of unknown words, createAdd commentMore actions
+For each word in the list of unknown words, create
  **translation of this word, three natural English sentences and translation of each of them into Russian** that:
 - Clearly shows the meaning of the unknown word through context.
 - Sentences must sound natural and be understandable to a learner.
 - Do NOT define the word; use it in context.
-- Each word, his translation and sentences with their translations should be on a new line,Add commentMore actions
+- Each word, his translation and sentences with their translations should be on a new line,
  prefixed with the word itself like:
   `word;word_translation;sentence1;sentence1_translation;sentence2;sentence2_translation;sentence3;sentence3_translation`.
 
 Unknown words: {', '.join(unknown_words)}
 
 Output:
-Translation and sentences with their translations for each unknown word, all per line, formatted as:Add commentMore actions
+Translation and sentences with their translations for each unknown word, all per line, formatted as:
 word;word_translation;sentence1;sentence1_translation;sentence2;sentence2_translation;sentence3;sentence3_translation
 """.strip()
 
