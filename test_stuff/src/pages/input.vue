@@ -2,6 +2,9 @@
 <script> 
 import BaseButton from '@/components/Basebutton.vue';
 import router from '@/router';
+import { useUserTextStore } from '@/stores/userText';
+
+
 export default {
     data() {
         return {
@@ -9,9 +12,12 @@ export default {
             userText: '',
             isDone: true,
             validatedText: '',
+            textStore: null,
         }
     },
     mounted() { 
+        //this variable represents store, you can use all its actions as methods
+        this.textStore = useUserTextStore();
     },
     components: {
         BaseButton
@@ -48,19 +54,10 @@ export default {
                 this.pickedWords.push(words[Math.floor(Math.random() * length)])
             }
         },
-        validateWords() {
-            let wordsArr = this.userText.trim().split(' ');
-            this.userText = '';
-
-            wordsArr.forEach((word) => {
-                word = word.match(/^[a-zA-Z\d]*/);
-                if (word != "") {
-                    this.validatedText += `${word} `;
-                }
-            })
-            // let textarea = document.getElementById('text');
-            // textarea.innerText = this.validatedText;
-            this.userText = this.validatedText;
+        goToFilterText() {
+            //using Store variable to set user text
+            this.textStore.setText(this.userText);
+            router.push({name: "FilterFromText"});
         }
 
     },
@@ -80,7 +77,7 @@ export default {
                 <textarea id = "text" v-model="userText" placeholder="Например: To be, or not to be, that is the question. Whether..."></textarea>
             </form>
         </div>
-        <BaseButton class = "submit" @click="validateWords()">Начать выборку слов</BaseButton>
+        <BaseButton class = "submit" @click="goToFilterText()">Начать выборку слов</BaseButton>
    </main>
 </template>
 

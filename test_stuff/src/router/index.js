@@ -4,6 +4,7 @@ import GenerSettings from '@/pages/generSetPage.vue';
 import PasteTextPage from '@/pages/pasteTextPage.vue';
 import FinalPage from '@/pages/finalPage.vue';
 import Input from '@/pages/input.vue';
+import FilterFromText from '@/pages/filterFromText.vue'
 
 
 const routes = [
@@ -11,7 +12,8 @@ const routes = [
   { path: '/generSettings', name: 'GenerSettings', component: GenerSettings },
   { path: '/pasteText', name: 'PasteText', component: PasteTextPage },
   { path: '/result', name: 'FinalPage', component: FinalPage},
-  { path: '/input', name: 'Input', component: Input}
+  { path: '/input', name: 'Input', component: Input},
+  { path: '/filterText', name: 'FilterFromText', component: FilterFromText}
 ];
 
 const router = createRouter({
