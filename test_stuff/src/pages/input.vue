@@ -8,6 +8,7 @@ export default {
             pickedWords: new Array(),
             userText: '',
             isDone: true,
+            validatedText: '',
         }
     },
     mounted() { 
@@ -16,12 +17,14 @@ export default {
         BaseButton
     },
     methods: {
+    //this function is not need and should be deleted later
+    //when all features on this page will be finished
         async fatchdata() {
             this.pickWords();
             const resp = {
                 unknown_words: this.pickedWords,
             };
-            const response = await fetch("http://127.0.0.1:8000/wordlist/post", {
+            const response = await fetch("https://anki.dbpg.ru/wordlist/post", {
                 method: "POST",
                 headers: {
                     'Content-Type' : 'application/json'
@@ -45,10 +48,21 @@ export default {
                 this.pickedWords.push(words[Math.floor(Math.random() * length)])
             }
         },
-        showProccessingTitle() {
-            let div = document.createElement('div');
-            div.innerHTML = "Proccessing...";
+        validateWords() {
+            let wordsArr = this.userText.trim().split(' ');
+            this.userText = '';
+
+            wordsArr.forEach((word) => {
+                word = word.match(/^[a-zA-Z\d]*/);
+                if (word != "") {
+                    this.validatedText += `${word} `;
+                }
+            })
+            // let textarea = document.getElementById('text');
+            // textarea.innerText = this.validatedText;
+            this.userText = this.validatedText;
         }
+
     },
     watch: {
         isDone(newIsDone) {
@@ -66,7 +80,7 @@ export default {
                 <textarea id = "text" v-model="userText" placeholder="Например: To be, or not to be, that is the question. Whether..."></textarea>
             </form>
         </div>
-        <BaseButton class = "submit" @click="fatchdata()">Сгенерировать деку</BaseButton>
+        <BaseButton class = "submit" @click="validateWords()">Начать выборку слов</BaseButton>
    </main>
 </template>
 
