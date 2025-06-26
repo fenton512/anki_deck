@@ -119,6 +119,8 @@ export default {
         padding-left: 0.5em;
         font-size: 14px;
         resize: vertical;
+        scrollbar-width: thin;
+        scrollbar-color: #888 var(--color-background);
     }
     #text::placeholder {
         text-align: left;
