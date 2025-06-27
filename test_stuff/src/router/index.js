@@ -4,6 +4,7 @@ import GenerSettings from '@/pages/generSetPage.vue';
 import Filter from '@/pages/filter.vue';
 import FinalPage from '@/pages/finalPage.vue';
 import Input from '@/pages/input.vue';
+import Tinder from '@/pages/tinder.vue';
 
 
 const routes = [
@@ -11,7 +12,8 @@ const routes = [
   { path: '/generSettings', name: 'GenerSettings', component: GenerSettings },
   { path: '/filter', name: 'Filter', component: Filter },
   { path: '/result', name: 'FinalPage', component: FinalPage},
-  { path: '/input', name: 'Input', component: Input}
+  { path: '/input', name: 'Input', component: Input},
+  { path: '/tinder', name: 'Tinder', component: Tinder},
 ];
 
 const router = createRouter({

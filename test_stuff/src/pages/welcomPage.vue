@@ -84,7 +84,7 @@ h1 {
 }
 .mainContent {
     flex-grow: 2;
-    font-family: "Inter", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-optical-sizing: auto;
     font-weight: 50;
     font-style: normal;

@@ -105,12 +105,16 @@ Whether..."></textarea>
     }
     main {
         margin: 0 px;
-        font-family: "Inter", sans-serif;
+        font-family: "Roboto", sans-serif;
         font-optical-sizing: auto;
         font-weight: 300;
         font-style: normal;
         color: white;
         font-size: 17px;
+
+    }
+    header {
+        font-family: "Inter", sans-serif;
     }
     .header {
         font-family: "Roboto", sans-serif;
