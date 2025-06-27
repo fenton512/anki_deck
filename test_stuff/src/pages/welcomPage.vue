@@ -71,7 +71,7 @@ export default {
     position: absolute;
 }
 .welcome-button {
-    font-weight: 600;
+    font-weight: 100;
 
 }
 h1 {
@@ -86,13 +86,12 @@ h1 {
     flex-grow: 2;
     font-family: "Inter", sans-serif;
     font-optical-sizing: auto;
-    font-weight: 570;
+    font-weight: 50;
     font-style: normal;
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
     justify-items: center;
     align-items: center;
-    padding-top: 1.5%;
     height: 100%;
     width: 100%;
     position: relative;

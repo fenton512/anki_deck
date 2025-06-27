@@ -48,6 +48,12 @@ export default {
         showProccessingTitle() {
             let div = document.createElement('div');
             div.innerHTML = "Proccessing...";
+        },
+        goToFilter() {
+            router.push({name: 'Filter'});
+        },
+        goBack() {
+            router.push({name: "Welcom"})
         }
     },
     watch: {
@@ -60,17 +66,43 @@ export default {
 
 <template>
    <main>
+    <header>
+        <h2 @click="goBack"><-- Вернуться назад</h2>
+    </header>
         <div class = "header">Введите текст песни или книги</div>
         <div class = "form-container">
             <form>
-                <textarea id = "text" v-model="userText" placeholder="Например: To be, or not to be, that is the question. Whether..."></textarea>
+                <textarea id = "text" v-model="userText" placeholder="Например:
+To be, or not to be, that is the question. 
+Whether..."></textarea>
             </form>
         </div>
-        <BaseButton class = "submit" @click="fatchdata()">Сгенерировать деку</BaseButton>
+        <!-- <BaseButton class = "submit" @click="fatchdata()">Сгенерировать деку</BaseButton> -->
+        <BaseButton :onClick="goToFilter" class = "submit">Перейти к генерации деки</BaseButton>
    </main>
 </template>
 
 <style scoped> 
+
+    main {
+        margin: 0 px;
+        font-family: "Inter", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 300;
+        font-style: normal;
+        color: white;
+        font-size: 17px;
+    }
+    header h2 {
+        font-size: 15px;
+        font-weight: 100;
+    }
+    header h2:hover {
+        cursor: pointer;
+        text-decoration: underline;
+        text-decoration-color: #fff;
+        text-underline-offset: 4px;
+    }
     main {
         margin: 0 px;
         font-family: "Inter", sans-serif;
@@ -101,18 +133,20 @@ export default {
         border-radius: 10px;
         padding-top:0.5em;
         height: 150px;
-        border: 1px solid whitesmoke;
+        border: 2px solid whitesmoke;
         width: 100%;
         color: white;
         box-sizing: border-box;
         padding-left: 0.5em;
         font-size: 14px;
         resize: vertical;
+        font-size: 15px;
     }
     #text::placeholder {
         text-align: left;
         color: white;
         opacity: 0.8;
+        font-size: 15px;
     }
     #text:focus {
         outline: none;
@@ -123,9 +157,9 @@ export default {
         width: 255px;
         height: 60px;
         border-radius: 0;
-        border: 1px solid whitesmoke;
+
         margin: 0 auto; 
-        margin-top: 300px;
+        margin-top: 35px;
         
     }
     
