@@ -36,6 +36,7 @@ export default {
         redirect(event) {
             event.preventDefault();
             const names = ["Tinder", "Manual", "List"];
+            // store.setCount(maxword);
             router.push({ name: names[this.choice] });
         }
     },

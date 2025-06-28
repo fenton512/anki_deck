@@ -1,16 +1,20 @@
-
 <script> 
 import BaseButton from '@/components/Basebutton.vue';
 import router from '@/router';
+// import { useUserTextStore } from '@/stores/userText';
+
 export default {
     data() {
         return {
             pickedWords: new Array(),
             userText: '',
             isDone: true,
+            valid: true,
+            store: null
         }
     },
     mounted() { 
+
     },
     components: {
         BaseButton
@@ -50,7 +54,24 @@ export default {
             div.innerHTML = "Proccessing...";
         },
         goToFilter() {
-            router.push({name: 'Filter'});
+            const words = this.userText.trim().split(/\s+/).filter(word => word.length > 0);
+            const wordCount = words.length;
+
+            if (wordCount < 5) {
+                alert('Пожалуйста, введите как минимум 5 слов.');
+                return;
+            }
+            
+            if (wordCount > 500) {
+                alert('Пожалуйста, введите не более 500 слов.');
+                return;
+            }
+            else {
+                // this.store.setText(this.userText);
+                
+                router.push({name: "Filter"});
+            }
+        
         },
         goBack() {
             router.push({name: "Welcom"})
