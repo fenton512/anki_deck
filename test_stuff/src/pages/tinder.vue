@@ -76,8 +76,8 @@ export default {
                 router.push({name: 'Filter'});
             }
         },
-        finishGame() {
-            // router.push({name: 'FinalPage'});
+        redirect() {
+            router.push({name: 'FinalPage'});
         },
         goFilter() {
             router.push({name: "Filter"})
