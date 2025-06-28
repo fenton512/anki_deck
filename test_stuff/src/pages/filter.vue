@@ -35,7 +35,7 @@ export default {
         },
         redirect(event) {
             event.preventDefault();
-            const names = ["Tinder", "Manual", "List"];
+            const names = ["Tinder", "FilterFromText", "List"];
             router.push({ name: names[this.choice] });
         }
     },

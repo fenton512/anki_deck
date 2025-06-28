@@ -30,7 +30,7 @@ export default {
             const resp = {
                 unknown_words: this.pickedWords,
             };
-            const response = await fetch("https://anki.dbpg.ru/wordlist/post", {
+            const response = await fetch("https://anki.dbpg.ru/wordlist/get", {
                 method: "POST",
                 headers: {
                     'Content-Type' : 'application/json'
@@ -56,7 +56,6 @@ export default {
         },
         goToFilterText() {
             //using Store variable to set user text
-            this.textStore.setText(this.userText);
             router.push({name: "FilterFromText"});
         },
         showProccessingTitle() {
@@ -64,6 +63,7 @@ export default {
             div.innerHTML = "Proccessing...";
         },
         goToFilter() {
+            this.textStore.setText(this.userText);
             router.push({name: 'Filter'});
         },
         goBack() {
@@ -184,3 +184,8 @@ Whether..."></textarea>
     }
     
 </style>
+{
+    wantLearn: [],
+    dontWantLearn: [],
+    count: int
+}
