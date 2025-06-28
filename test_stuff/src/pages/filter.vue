@@ -224,6 +224,16 @@ export default {
         margin-left: 0.5em;
         width: auto;
     }
+    .header {
+        font-family: "Roboto", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        font-variation-settings:      
+        "wdth" 100;
+        text-align: center;
+        font-size: 32px;
+    }
     .submit {
         margin: 0 auto;
         margin-top: 3em;
