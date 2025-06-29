@@ -129,13 +129,5 @@ async def post_word(word: str, translations: str, context_sentence: str, is_impo
     con.commit()
     return {"status": 'ok'}
 
-class WordListRequest(BaseModel):
-    unknown_words: List[str]
 
-@app.post("/wordlist/post")
-async def post_text(payload: WordListRequest):
-    unknown_words = payload.unknown_words
-    response_text = request_sentences(unknown_words)
-    rows = parse_response_to_dicts(response_text)
-    return write_cards_to_csv(rows)
 
