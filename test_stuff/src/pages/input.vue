@@ -184,8 +184,3 @@ Whether..."></textarea>
     }
     
 </style>
-{
-    wantLearn: [],
-    dontWantLearn: [],
-    count: int
-}

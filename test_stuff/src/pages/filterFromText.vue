@@ -1,6 +1,8 @@
 <script>
 import { useUserTextStore } from '@/stores/userText';
 import Basebutton from '@/components/Basebutton.vue';
+import router from '@/router';
+import {useAPIStore} from "@/stores/API";
 export default {
     data() {
         return {
@@ -8,16 +10,22 @@ export default {
             textStore: null,
             textArea: null,
             words: [],
-            isVisiable: false
+            isVisiable: false,
+            resp: {
+                wantLearn: [],
+                dontWantLearn: [],
+                count: 0
+            },
         }
     },
     mounted() {
-        this.textStore = useUserTextStore();
-        //after rendering get data from store
-        this.text = this.textStore.text;
+        if (this.textStore == null){
+            this.textStore = useUserTextStore();
+            //after rendering get data from store
+            this.text = this.textStore.text;
+        }
         this.textArea = document.getElementsByClassName("textarea")[0];
         this.validateWords();
-        console.log(JSON.stringify(this.textStore.text));
     },
     components: {
         Basebutton
@@ -59,6 +67,21 @@ export default {
             let next = classes[(current+1)%3];
             word.class = next;
         },
+        startGeneration() {
+            for (let word of this.words) {
+                switch (word.class) {
+                    case "wantLearn":
+                        this.resp.wantLearn.push(word.word);
+                        break;
+                    case "neverLearn":
+                        this.resp.dontWantLearn.push(word.word);
+                        break;
+                }
+            }
+            let API = useAPIStore();
+            API.setState(this.resp);
+            router.push({name: "FinalPage"});
+        }
     }
 }
 </script>
@@ -84,7 +107,7 @@ export default {
             </span>
         </div>
         <div class="button-container">
-            <Basebutton class="start-generation">Начать генерацию</Basebutton>
+            <Basebutton class="start-generation" @click="startGeneration()">Начать генерацию</Basebutton>
         </div>
     </div>
 </template>
