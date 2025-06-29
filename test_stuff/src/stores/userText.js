@@ -11,5 +11,15 @@ export const useUserTextStore = defineStore('userText', {
         setText(text) {
             this.text = text;
         }
+    },
+    persist: {
+        enabled: true,
+        storageies: [
+            {
+                key: "userText",
+                strorage: sessionStorage,
+                paths: ['text'] 
+            }
+        ]
     }
 });

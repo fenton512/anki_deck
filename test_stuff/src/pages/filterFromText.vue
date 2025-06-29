@@ -19,11 +19,9 @@ export default {
         }
     },
     mounted() {
-        if (this.textStore == null){
-            this.textStore = useUserTextStore();
-            //after rendering get data from store
-            this.text = this.textStore.text;
-        }
+        this.textStore = useUserTextStore();
+        //after rendering get data from store
+        this.text = this.textStore.text;
         this.textArea = document.getElementsByClassName("textarea")[0];
         this.validateWords();
     },
