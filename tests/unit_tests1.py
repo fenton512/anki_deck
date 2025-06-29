@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 from Import_2 import lemmatization
 from Import_1 import splitting
+from Appearance import is_word_in_generated_sentences
 
 
 class TestSplittingFunction(unittest.TestCase):
@@ -148,6 +149,33 @@ class TestLemmatization(unittest.TestCase):
         self.assertEqual(result["known_words"]["cats"], "cat")
         self.assertEqual(result["unknown_words"]["dogs"], "dog")
         self.assertEqual(result["unwanted_words"]["mice"], "mouse")
+
+
+class TestAppearance(unittest.TestCase):
+    def test_word_found_exact_match(self):
+        word = "run"
+        sentences = ["He runs every morning."]
+        self.assertTrue(is_word_in_generated_sentences(word, sentences))
+
+    def test_word_found_case_insensitive(self):
+        word = "Apple"
+        sentences = ["I bought an apple yesterday."]
+        self.assertTrue(is_word_in_generated_sentences(word, sentences))
+
+    def test_word_not_found(self):
+        word = "swim"
+        sentences = ["He runs and jumps."]
+        self.assertFalse(is_word_in_generated_sentences(word, sentences))
+
+    def test_multiple_sentences_some_match(self):
+        word = "read"
+        sentences = ["They will run.", "She reads a book.", "Walking is healthy."]
+        self.assertTrue(is_word_in_generated_sentences(word, sentences))
+
+    def test_empty_sentences(self):
+        word = "apple"
+        sentences = []
+        self.assertFalse(is_word_in_generated_sentences(word, sentences))
 
 
 if __name__ == "__main__":
