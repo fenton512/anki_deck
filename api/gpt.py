@@ -2,6 +2,8 @@ from openai import OpenAI
 import io
 from fastapi.responses import PlainTextResponse
 import csv
+from dotenv import load_dotenv
+import os
 
 # Создай клиента с токеном
 client = OpenAI(
