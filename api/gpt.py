@@ -1,22 +1,22 @@
 from openai import OpenAI
 import io
-import spacy
-from gtts import gTTS
 from fastapi.responses import PlainTextResponse
 import csv
 from dotenv import load_dotenv
 import os
 
-nlp = spacy.load("en_core_web_sm")
+load_dotenv()
+
+openai_key = os.getenv("OPENAI_API_KEY")
 
 # Создай клиента с токеном
 client = OpenAI(
     # замените на свой ключ
-    api_key="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"
+    api_key=openai_key
 )
 
 
-def generate_prompt(unknown_words,known_words,count):
+def generate_prompt(unknown_words):
     return f"""
 You are a language tutor helping create flashcards for learning English.
 
@@ -26,14 +26,11 @@ For each word in the list of unknown words, create
 - Clearly shows the meaning of the unknown word through context.
 - Sentences must sound natural and be understandable to a learner.
 - Do NOT define the word; use it in context.
-- Try to use less words from the known words list in the sentences.
-- Length of each sentence should be exactly {count} words.
 - Each word, his translation and sentences with their translations should be on a new line,
  prefixed with the word itself like:
   `word;word_translation;sentence1;sentence1_translation;sentence2;sentence2_translation;sentence3;sentence3_translation`.
 
 Unknown words: {', '.join(unknown_words)}
-Known words: {', '.join(known_words)}
 
 Output:
 Translation and sentences with their translations for each unknown word, all per line, formatted as:
@@ -41,8 +38,8 @@ word;word_translation;sentence1;sentence1_translation;sentence2;sentence2_transl
 """.strip()
 
 
-def request_sentences(unknown_words,known_words,count):#add arguements
-    prompt = generate_prompt(unknown_words,known_words,count)# add arguements
+def request_sentences(unknown_words):
+    prompt = generate_prompt(unknown_words)
 
     completion = client.chat.completions.create(
         model="gpt-4o-mini",  # Или "gpt-4o-mini", если хочешь
@@ -75,13 +72,9 @@ def parse_response_to_dicts(response_text):
 
 def write_cards_to_csv(response_text):
     csv_in_memory = io.StringIO(newline="")
-    fieldnames = ["word","lemma", "word_translation", "sentence1", "sentence1_translation", "sentence2", "sentence2_translation", "sentence3", "sentence3_translation"]
+    fieldnames = ["word", "word_translation", "sentence1", "sentence1_translation", "sentence2", "sentence2_translation", "sentence3", "sentence3_translation"]
     writer = csv.DictWriter(csv_in_memory, fieldnames=fieldnames)
     writer.writeheader()
     for row in response_text:
-        lemma = nlp(row["word"])[0].lemma_
-        row_with_lemma = {
-            "lemma": lemma,
-            **row}
-        writer.writerow(row_with_lemma)
+        writer.writerow(row)
     return PlainTextResponse(csv_in_memory.getvalue())
