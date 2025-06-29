@@ -9,27 +9,67 @@ export default {
     },
     data() {
         return {
-            resp: null
+            resp: null,
+            isGetResp: false,
+            isErr: false,
+            button: null,
+            url: null
         }
     },
     mounted() {
         this.resp = useAPIStore().data;
-        console.log(this.resp);
+        this.button = this.$refs.buttonRef;
+        this.fatchdata();
+    },
+    methods: {
+        async fatchdata() {
+            try {
+                const response = await fetch("http://127.0.0.1:8000/wordlist/post", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type' : 'application/json'
+                    },
+                    body: JSON.stringify(this.resp),
+                });
+                if (!response.ok) throw new Error(`Err: ${response.status}`)
+                const blob = await response.blob();
+                this.url = window.URL.createObjectURL(blob);
+                this.isGetResp = true;
+        
+
+            }catch (err) {
+                this.isErr = true;
+                console.log(err);
+            }
+        },
+        downloadFile() {
+            const a = document.createElement('a');
+            a.href = this.url;
+            a.download = "Anki_deck.csv";
+            a.style.display = "none";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
     }
 }
 </script>
 <template>
     <div class="main-container">
-        <h1>Ваша колода готова</h1>
+        <h1 v-if="!isGetResp">Происходит генерация вашей колоды</h1>
+        <h1 v-else>Ваша колода готова</h1>
         <div class="button-flex">
-            <Basebutton class="button-csv">
+            <Basebutton  v-if="isGetResp" class="button-csv" @click="downloadFile()">
                 <div class="inner-button-flex">
                     <arrowSVG class="arrow-icon"/>
                     <span>Скачать в формате .csv</span>
                 </div>
             </Basebutton>
+            <div v-else style="font-size: 50px;">Генерация...</div>
         </div>
-        <Basebutton class="back-button">Вернуться в начало</Basebutton>
+        <div v-if="isErr">Упс, кажется что-то пошло не так</div>
+        <Basebutton ref="buttonRef" class="back-button">Вернуться в начало</Basebutton>
     </div>
 </template>
 
