@@ -12,5 +12,15 @@ export const useAPIStore = defineStore("API", {
             this.dontWantLearn = object.dontWantLearn;
             this.count = object.count;
         }
+    },
+    persist: {
+        enabled: true,
+        storageies: [
+            {
+                key: "API",
+                strorage: sessionStorage,
+                paths: ['wantLearn', 'dontWantLearn', 'count']
+            }
+        ]
     }
 })
