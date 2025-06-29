@@ -1,9 +1,12 @@
 from fastapi import FastAPI, Query
 from sqlite3 import connect
+from gpt import request_sentences, write_cards_to_csv, parse_response_to_dicts
 import os
 from fastapi.middleware.cors import CORSMiddleware
 from decryptors import *
-from gpt import request_sentences, write_cards_to_csv
+from pydantic import BaseModel
+from typing import List
+
 
 app = FastAPI()
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -11,27 +14,26 @@ data_file = os.path.join(basedir, 'anki_deck.db')
 con = connect(data_file)
 cur = con.cursor()
 
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # разрешить всем
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
 @app.get("/")
 def root():
     return {"message": "FastAPI работает!"}
 
-
 @app.get("/user/get")
 async def get_user(login: str):
     ans = {
-        'id': cur.execute("SELECT user_id FROM user WHERE login = ?", (login,)).fetchone()[0],
-        'login': login,
-        'encrypted_password': cur.execute("SELECT encrypted_password FROM user WHERE login = ?",
-                                          (login,)).fetchone()[0]
+    'id': cur.execute("SELECT user_id FROM user WHERE login = ?", (login,)).fetchone()[0],
+    'login': login,
+    'encrypted_password': cur.execute("SELECT encrypted_password FROM user WHERE login = ?",
+                                      (login,)).fetchone()[0]
     }
     return ans
 
@@ -67,13 +69,13 @@ async def get_card(card_id: int):
         'card_id': card_id,
         'word_id': cur.execute("SELECT word_id FROM cards WHERE card_id = ?", (card_id,)).fetchone()[0],
         'sentences': decode_blob(cur.execute("SELECT sentences FROM cards WHERE card_id = ?",
-                                             (card_id,)).fetchall()[0])
+                                         (card_id,)).fetchall()[0])
     }
     return ans
 
 
 @app.post("/card/post")
-async def post_card(word_id: int, sentences: list[str] = Query()):
+async def post_card(word_id: int,  sentences: list[str] = Query()):
     cur.execute("INSERT INTO cards (word_id, sentences) VALUES (?, ?)", (word_id, array_to_blob(sentences)))
     con.commit()
     return {"status": 'ok'}
@@ -89,7 +91,7 @@ async def get_by_word(word: str):
         'context_sentence': cur.execute("SELECT context_sentence FROM words WHERE word = ?",
                                         (word,)).fetchone()[0],
         'is_important': bool(cur.execute("SELECT is_important FROM words WHERE word = ?",
-                                         (word,)).fetchone()[0]),
+                                    (word,)).fetchone()[0]),
         'user_id': cur.execute("SELECT user_id FROM words WHERE word = ?",
                                (word,)).fetchone()[0]
     }
@@ -106,7 +108,7 @@ async def get_by_id(word_id: int):
         'context_sentence': cur.execute("SELECT context_sentence FROM words WHERE word_id = ?",
                                         (word_id,)).fetchone()[0],
         'is_important': bool(cur.execute("SELECT is_important FROM words WHERE word_id = ?",
-                                         (word_id,)).fetchone()[0]),
+                                    (word_id,)).fetchone()[0]),
         'user_id': cur.execute("SELECT user_id FROM words WHERE word_id = ?",
                                (word_id,)).fetchone()[0]
     }
@@ -128,14 +130,4 @@ async def post_word(word: str, translations: str, context_sentence: str, is_impo
     return {"status": 'ok'}
 
 
-@app.get("/wordlist/get")
-async def get_wordlist(count: int,
-                       wantLearn: list[str] = Query(),
-                       dontWantLearn: list[str] = Query()):
-    return post_wordlist(wantLearn, dontWantLearn)
 
-
-@app.post("/wordlist/post")
-async def post_wordlist(unknown_words: list[str] = Query(), dont_want_learn: list[str] = Query()):
-    response_text = request_sentences(unknown_words, dont_want_learn)
-    return write_cards_to_csv(response_text)

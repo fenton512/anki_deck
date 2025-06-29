@@ -45,7 +45,8 @@ export default {
     font-size: 15px;
 }
 .button-content {
-  display: inline-block;
+  display: block;
+  width: 100%;
   text-align: center;
 }
 </style>
