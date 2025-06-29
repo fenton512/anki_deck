@@ -4,6 +4,8 @@ import spacy
 from gtts import gTTS
 from fastapi.responses import PlainTextResponse
 import csv
+from dotenv import load_dotenv
+import os
 
 nlp = spacy.load("en_core_web_sm")
 
