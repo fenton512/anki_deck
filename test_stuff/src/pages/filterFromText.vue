@@ -89,9 +89,9 @@ export default {
 <template>
     <div class="main-container">
         <h1>Выделение слов <span class="question-mark" @mouseover="isVisiable = true" @mouseleave="isVisiable = false">?
-            <span v-if="isVisiable" class="user-hint">кликни один раз по словам, которые <span style="background-color: #71c686;">хочешь учить</span>,
-            из них будут сгенерированы карточки,<br>
-            второй клик — слова никогда<span style="background-color: #B74747;"> не будут попадаться</span> в карточках</span>
+            <span v-if="isVisiable" class="user-hint">Кликни по слову чтобы задать ему статус:<br><span style="background-color: #71c686;">Зеленые:</span>
+            неизвестные слова, которые ты хочешь учить<br>
+            <span style="background-color: #B74747;">Красные:</span> слова, которые ты не хочешь учить</span>
         </span>
     </h1>
         <div class="text-area" >
@@ -171,7 +171,7 @@ export default {
 
     .user-hint{
         content: attr(data-text);
-        min-width: 300px;
+        min-width: 400px;
         z-index: 1;
         background-color: var(--color-background);
         position: absolute;
