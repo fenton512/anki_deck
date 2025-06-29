@@ -1,10 +1,20 @@
 <script>
 import Basebutton from '@/components/Basebutton.vue';
 import arrowSVG from '@/components/icons/buttonArrowFinalPage.vue';
+import { useAPIStore } from '@/stores/API';
 export default {
     components: {
         Basebutton,
         arrowSVG
+    },
+    data() {
+        return {
+            resp: null
+        }
+    },
+    mounted() {
+        this.resp = useAPIStore().data;
+        console.log(this.resp);
     }
 }
 </script>
@@ -67,3 +77,4 @@ export default {
         width: 8%;
     }
 </style>
+
