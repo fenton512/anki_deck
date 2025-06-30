@@ -16,6 +16,7 @@ const routes = [
   { path: '/input', name: 'Input', component: Input},
   { path: '/tinder', name: 'Tinder', component: Tinder},,
   { path: '/filterText', name: 'FilterFromText', component: FilterFromText}
+
 ];
 
 const router = createRouter({

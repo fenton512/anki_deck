@@ -6,6 +6,9 @@ import { defineStore } from "pinia";
 export const useUserTextStore = defineStore('userText', {
     state: () => ({
         text: '',
+        yesLearn: [],
+        noLearn: [],
+        countLearn: 0
     }),
     actions: {
         setText(text) {

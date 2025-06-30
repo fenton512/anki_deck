@@ -36,6 +36,8 @@ export default {
         redirect(event) {
             event.preventDefault();
             const names = ["Tinder", "FilterFromText", "List"];
+
+            // store.setCount(maxword);
             router.push({ name: names[this.choice] });
         }
     },
@@ -223,6 +225,16 @@ export default {
     .radio-label {
         margin-left: 0.5em;
         width: auto;
+    }
+    .header {
+        font-family: "Roboto", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        font-variation-settings:      
+        "wdth" 100;
+        text-align: center;
+        font-size: 32px;
     }
     .submit {
         margin: 0 auto;
