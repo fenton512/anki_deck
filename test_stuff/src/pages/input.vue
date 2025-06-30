@@ -78,8 +78,7 @@ export default {
                 return;
             }
             else {
-                // this.store.setText(this.userText);
-                
+                this.textStore.setText(words);
                 router.push({name: "Filter"});
             }
         

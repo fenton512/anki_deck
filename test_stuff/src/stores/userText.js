@@ -5,14 +5,23 @@ import { defineStore } from "pinia";
 
 export const useUserTextStore = defineStore('userText', {
     state: () => ({
-        text: '',
+        words: [],
         yesLearn: [],
         noLearn: [],
         countLearn: 0
     }),
     actions: {
         setText(text) {
-            this.text = text;
+            this.words = text;
+        },
+        setYes(yes) {
+            this.yesLearn = yes;
+        },
+        setNo(no) {
+            this.noLearn = no;
+        },
+        setCount(count) {
+            this.countLearn = count;
         }
     },
     persist: {
