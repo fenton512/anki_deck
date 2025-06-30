@@ -1,20 +1,23 @@
 <script> 
 import BaseButton from '@/components/Basebutton.vue';
 import router from '@/router';
+import { useUserTextStore } from '@/stores/userText';
 
 export default {
     data() {
         return {
             countleft: 0,
             countadded: 0,
-            words: ['aboba', 'skibidi', 'burmeowkoff', 'pure random', 'boba tee', 'nikolay shilov'],
+            words: [],
             yesLearn: [],
             noLearn: [],
             currentIndex: 0,
             currentWord: '',
+            store: null
         }
     },
     mounted() { 
+        this.store = useUserTextStore();
         this.initializeGame();
     },
     components: {
@@ -28,6 +31,9 @@ export default {
             this.yesLearn = [];
             this.noLearn = [];
             this.updateCurrentWord();
+            this.words = this.store.words;
+            this.updateCurrentWord();
+            this.countleft = this.words.length;
         },
         updateCurrentWord() {
             if (this.currentIndex < this.words.length) {
