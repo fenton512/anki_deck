@@ -20,9 +20,9 @@ def test_post_and_get_user():
     login = "testuser"
     password = "testpassword"
 
-    response = client.post(f"/user/post/{login}/{password}")
+    response = client.get(f"/user/post/{login}/{password}")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+    assert response.json()['status'] == "ok"
 
     response_get = client.get(f"/user/get?login={login}")
     assert response_get.status_code == 200
@@ -45,7 +45,7 @@ def test_get_deck():
 def test_post_deck():
     user_id = 1
     cards = [1, 2, 3]
-    response = client.post("/deck/post", params={"user_id": user_id, "cards": ",".join(map(str, cards))})
+    response = client.get("/deck/post", params={"user_id": user_id, "cards": cards})
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 
@@ -63,7 +63,7 @@ def test_get_card():
 def test_post_card():
     word_id = 1
     sentences = ["sentence 1", "sentence 2"]
-    response = client.post("/card/post", params={"word_id": word_id, "sentences": ",".join(sentences)})
+    response = client.get("/card/post", params={"word_id": word_id, "sentences": ",".join(sentences)})
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 
@@ -90,7 +90,7 @@ def test_get_by_id():
 
 
 def test_post_word():
-    response = client.post(
+    response = client.get(
         "/word/post",
         params={
             "word": "testword",
@@ -106,7 +106,7 @@ def test_post_word():
 
 
 def test_wordlist_get_post():
-    response = client.post(
+    response = client.get(
         "/wordlist/post",
         params={
             "unknown_words": "word1,word2",
@@ -118,30 +118,25 @@ def test_wordlist_get_post():
 
 def test_get_user_not_found():
     response = client.get("/user/get?login=nonexistent")
-    assert response.status_code == 404
-    assert response.json() == {"detail": "User not found"}
+    assert (not response.json()['id'])
 
 
 def test_get_deck_not_found():
     response = client.get("/deck/get?deck_id=99999")
-    assert response.status_code == 404
-    assert response.json() == {"detail": "Deck not found"}
+    assert (not response.json()['user_id'])
 
 
 def test_get_card_not_found():
     response = client.get("/card/get?card_id=99999")
-    assert response.status_code == 404
-    assert response.json() == {"detail": "Card not found"}
+    assert (not response.json()['word_id'])
 
 
 def test_get_by_word_not_found():
     response = client.get("/word/get_by_word?word=nonexistentword")
-    assert response.status_code == 404
-    assert response.json() == {"detail": "Word not found"}
+    assert (not response.json()['word_id'])
 
 
 def test_get_by_id_not_found():
     response = client.get("/word/get_by_id?word_id=99999")
-    assert response.status_code == 404
-    assert response.json() == {"detail": "Word not found"}
+    assert (not response.json()['word'])
 

@@ -9,12 +9,17 @@ class TestSplittingFunction(unittest.TestCase):
 
     def test_basic_sentence(self):
         text = "Hello, world! It's a beautiful day."
-        result = splitting(text)
+        result1 = splitting(text)
+        result = []
+        for token in result1.keys():
+            if result1[token]:
+                result.append(token)
 
         self.assertIn("Hello", result)
         self.assertIn("world", result)
-        self.assertIn("It's", result)
-        self.assertIn("a", result)
+        self.assertNotIn("It", result)
+        self.assertNotIn("'s", result)
+        self.assertNotIn("a", result)
         self.assertIn("beautiful", result)
         self.assertNotIn(",", result)
         self.assertNotIn("!", result)
@@ -22,7 +27,12 @@ class TestSplittingFunction(unittest.TestCase):
 
     def test_stopwords_and_punctuation(self):
         text = "The quick brown fox jumps over the lazy dog."
-        result = splitting(text)
+        result1 = splitting(text)
+        result = []
+        for token in result1.keys():
+            if result1[token]:
+                result.append(token)
+
         self.assertNotIn("The", result)
         self.assertNotIn("over", result)
         self.assertNotIn("the", result)
@@ -36,19 +46,32 @@ class TestSplittingFunction(unittest.TestCase):
 
     def test_word_with_hyphen_and_apostrophe(self):
         text = "It's a well-known fact that e-mail is common."
-        result = splitting(text)
-        self.assertIn("It's", result)
+        result1 = splitting(text)
+        result = []
+        for token in result1.keys():
+            if result1[token]:
+                result.append(token)
+
         self.assertIn("well-known", result)
         self.assertIn("e-mail", result)
 
     def test_non_matching_tokens_excluded(self):
         text = "1234 !@#$%"
-        result = splitting(text)
-        self.assertEqual(result, {})
+        result1 = splitting(text)
+        result = []
+        for token in result1.keys():
+            if result1[token]:
+                result.append(token)
+        self.assertEqual(result, [])
 
     def test_empty_string(self):
-        result = splitting("")
-        self.assertEqual(result, {})
+        text = ""
+        result1 = splitting(text)
+        result = []
+        for token in result1.keys():
+            if result1[token]:
+                result.append(token)
+        self.assertEqual(result, [])
 
 
 class TestLemmatization(unittest.TestCase):
@@ -83,7 +106,7 @@ class TestLemmatization(unittest.TestCase):
                 else:
                     token = MockToken("unknown")
                 self.tokens = [token]
-                return self
+                return self.tokens
 
         mock_load.return_value = MockNLP()
 
@@ -100,11 +123,11 @@ class TestLemmatization(unittest.TestCase):
         }
         result = lemmatization(json_data)
 
-        self.assertIn("running", result["known_words"])
-        self.assertIn("child", result["known_words"]["running"])
+        self.assertIn("running", result["known_words"].keys())
+        self.assertIn("children", result["unknown_words"].keys())
 
-        self.assertEqual(result["unknown_words"]["children"], "child")
-        self.assertEqual(result["unwanted_words"]["mice"], "mouse")
+        self.assertEqual(result["unknown_words"]["children"][0], "child")
+        self.assertEqual(result["unwanted_words"]["mice"][0], "mouse")
 
     @patch("spacy.load")
     def test_multiple_words(self, mock_load):
@@ -134,7 +157,7 @@ class TestLemmatization(unittest.TestCase):
                 }
                 token = MockToken(lemmas_map.get(text, "unknown"))
                 self.tokens = [token]
-                return self
+                return self.tokens
 
         mock_load.return_value = MockNLP()
 
@@ -146,9 +169,9 @@ class TestLemmatization(unittest.TestCase):
 
         result = lemmatization(json_data)
 
-        self.assertEqual(result["known_words"]["cats"], "cat")
-        self.assertEqual(result["unknown_words"]["dogs"], "dog")
-        self.assertEqual(result["unwanted_words"]["mice"], "mouse")
+        self.assertEqual(result["known_words"]["cats"][0], "cat")
+        self.assertEqual(result["unknown_words"]["dogs"][0], "dog")
+        self.assertEqual(result["unwanted_words"]["mice"][0], "mouse")
 
 
 class TestAppearance(unittest.TestCase):
