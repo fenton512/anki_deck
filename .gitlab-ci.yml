@@ -14,7 +14,9 @@ test_job:
   stage: test
   script:
     - echo "Running tests..."
-    - python -m pytest
+    - python unit_tests1.py
+    - cd api
+    - python integration_tests.py
 
 deploy_job:
   stage: deploy
