@@ -1,6 +1,7 @@
 <script> 
 import BaseButton from '@/components/Basebutton.vue';
 import router from '@/router';
+import { useUserTextStore } from '@/stores/userText';
 
 export default {
     data() {
@@ -36,8 +37,8 @@ export default {
         redirect(event) {
             event.preventDefault();
             const names = ["Tinder", "FilterFromText", "List"];
-
-            // store.setCount(maxword);
+            const store = useUserTextStore();
+            store.setCount(this.maxword);
             router.push({ name: names[this.choice] });
         }
     },

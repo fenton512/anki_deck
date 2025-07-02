@@ -58,7 +58,7 @@ export default {
         },
         goToFilterText() {
             //using Store variable to set user text
-            router.push({name: "FilterFromText"});
+            router.push({name: "Filter"});
         },
         showProccessingTitle() {
             let div = document.createElement('div');
@@ -79,7 +79,7 @@ export default {
             }
             else {
                 this.textStore.setText(words);
-                router.push({name: "Filter"});
+                router.push({name: "Filter"})
             }
         
         },

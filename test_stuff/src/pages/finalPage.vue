@@ -1,7 +1,7 @@
 <script> 
 import BaseButton from '@/components/Basebutton.vue';
 import router from '@/router';
-// import { useUserTextStore } from '@/stores/userText';
+import { useUserTextStore } from '@/stores/userText';
 
 export default {
     data() {
@@ -9,7 +9,8 @@ export default {
         }
     },
     mounted() { 
-
+        const store = useUserTextStore();
+        store.resetStore();
     },
     components: {
         BaseButton

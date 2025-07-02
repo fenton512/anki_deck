@@ -8,7 +8,8 @@ export const useUserTextStore = defineStore('userText', {
         words: [],
         yesLearn: [],
         noLearn: [],
-        countLearn: 0
+        countLearn: 0,
+        known: []
     }),
     actions: {
         setText(text) {
@@ -22,15 +23,25 @@ export const useUserTextStore = defineStore('userText', {
         },
         setCount(count) {
             this.countLearn = count;
+        },
+        setKnown(known) {
+            this.known = known;
+        },
+        resetStore() {
+            this.words = [];
+            this.yesLearn = [];
+            this.noLearn = [];
+            this.countLearn = 0;
+            this.known = [];
         }
     },
     persist: {
         enabled: true,
-        storageies: [
+        strategies: [
             {
                 key: "userText",
-                strorage: sessionStorage,
-                paths: ['text'] 
+                storage: sessionStorage,
+                paths: ['words', 'yesLearn', 'noLearn', 'known']
             }
         ]
     }
