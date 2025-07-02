@@ -5,10 +5,14 @@ import csv
 from dotenv import load_dotenv
 import os
 
+load_dotenv()
+
+openai_key = os.getenv("OPENAI_API_KEY")
+
 # Создай клиента с токеном
 client = OpenAI(
     # замените на свой ключ
-    api_key="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"
+    api_key=openai_key
 )
 
 
