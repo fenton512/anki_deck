@@ -15,7 +15,8 @@ export default {
             textStore: null,
         }
     },
-    mounted() { 
+    mounted() {
+        this.fatchdata() 
         //this variable represents store, you can use all its actions as methods
         this.textStore = useUserTextStore();
     },
@@ -27,10 +28,12 @@ export default {
     //when all features on this page will be finished
         async fatchdata() {
             this.pickWords();
-            const resp = {
-                unknown_words: this.pickedWords,
+            const resp = { // add
+                unknown_words: ["kill","survive","climb"],
+                known_words:["dog","cat","emansipation","Russia"],
+                count:6
             };
-            const response = await fetch("https://anki.dbpg.ru/wordlist/get", {
+            const response = await fetch("http://127.0.0.1:8000/wordlist/post", {
                 method: "POST",
                 headers: {
                     'Content-Type' : 'application/json'
