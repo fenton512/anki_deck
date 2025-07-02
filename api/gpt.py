@@ -5,18 +5,24 @@ from gtts import gTTS
 from fastapi.responses import PlainTextResponse
 import csv
 import base64
+from dotenv import load_dotenv
+import os
+
 
 
 nlp = spacy.load("en_core_web_sm")
 
-# Создай клиента с токеном
+load_dotenv()
+openai_key = os.getenv("OPENAI_API_KEY")
+
+
 client = OpenAI(
-    # замените на свой ключ
-    api_key=""
+    api_key=openai_key
 )
 
 
 def generate_prompt(unknown_words,known_words,count):
+
     return f"""
 You are a language tutor helping create flashcards for learning English.
 
@@ -27,13 +33,14 @@ For each word in the list of unknown words, create
 - Sentences must sound natural and be understandable to a learner.
 - Do NOT define the word; use it in context.
 - Try to use less words from the known words list in the sentences.
-- Length of each sentence should be exactly {count} words.
+- Length of each sentence should be around {count} words.
 - Each word, his translation and sentences with their translations should be on a new line,
  prefixed with the word itself like:
   `word;word_translation;sentence1;sentence1_translation;sentence2;sentence2_translation;sentence3;sentence3_translation`.
 
 Unknown words: {', '.join(unknown_words)}
 Known words: {', '.join(known_words)}
+
 
 Output:
 Translation and sentences with their translations for each unknown word, all per line, formatted as:

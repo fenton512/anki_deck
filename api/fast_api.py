@@ -147,3 +147,4 @@ async def post_text(payload: WordListRequest):
 @app.options("/wordlist/post")
 async def options_wordlist_post(request: Request):
     return JSONResponse(status_code=200)
+
