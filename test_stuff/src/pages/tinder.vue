@@ -9,15 +9,16 @@ export default {
             countleft: 0,
             countadded: 0,
             words: [],
-            yesLearn: [],
-            noLearn: [],
             currentIndex: 0,
             currentWord: '',
-            store: null
+        }
+    },
+    computed: {
+        store() {
+            return useUserTextStore();
         }
     },
     mounted() { 
-        this.store = useUserTextStore();
         this.initializeGame();
     },
     components: {
@@ -25,15 +26,11 @@ export default {
     },
     methods: {
         initializeGame() {
+            this.words = this.store.words;
             this.countleft = this.words.length;
             this.countadded = 0;
             this.currentIndex = 0;
-            this.yesLearn = [];
-            this.noLearn = [];
             this.updateCurrentWord();
-            this.words = this.store.words;
-            this.updateCurrentWord();
-            this.countleft = this.words.length;
         },
         updateCurrentWord() {
             if (this.currentIndex < this.words.length) {
@@ -44,14 +41,20 @@ export default {
         },
         likeWord() {
             if (this.currentIndex < this.words.length) {
-                this.yesLearn.push(this.currentWord);
+                this.store.yesLearn.push(this.currentWord);
                 this.countadded++;
                 this.nextWord();
             }
         },
         dislikeWord() {
             if (this.currentIndex < this.words.length) {
-                this.noLearn.push(this.currentWord);
+                this.store.noLearn.push(this.currentWord);
+                this.nextWord();
+            }
+        },
+        starWord() {
+            if (this.currentIndex < this.words.length) {
+                this.store.known.push(this.currentWord);
                 this.nextWord();
             }
         },
@@ -59,7 +62,6 @@ export default {
             this.currentIndex++;
             this.countleft = this.words.length - this.currentIndex;
             this.updateCurrentWord();
-            
             if (this.currentIndex >= this.words.length) {
                 this.finishGame();
             }
@@ -68,19 +70,26 @@ export default {
             if (this.currentIndex > 0) {
                 this.currentIndex--;
                 this.countleft = this.words.length - this.currentIndex;
-                
-
-                if (this.yesLearn.length > 0 && this.yesLearn[this.yesLearn.length - 1] === this.words[this.currentIndex]) {
-                    this.yesLearn.pop();
+                // Remove from the correct list if going back
+                const prevWord = this.words[this.currentIndex];
+                if (this.store.yesLearn.length > 0 && this.store.yesLearn[this.store.yesLearn.length - 1] === prevWord) {
+                    this.store.yesLearn.pop();
                     this.countadded--;
-                } else if (this.noLearn.length > 0 && this.noLearn[this.noLearn.length - 1] === this.words[this.currentIndex]) {
-                    this.noLearn.pop();
+                } else if (this.store.noLearn.length > 0 && this.store.noLearn[this.store.noLearn.length - 1] === prevWord) {
+                    this.store.noLearn.pop();
+                } else if (this.store.known.length > 0 && this.store.known[this.store.known.length - 1] === prevWord) {
+                    this.store.known.pop();
                 }
-                
                 this.updateCurrentWord();
             } else {
                 router.push({name: 'Filter'});
             }
+        },
+        finishGame() {
+            // Save lists to store explicitly (in case of reactivity issues)
+            this.store.setYes(this.store.yesLearn);
+            this.store.setNo(this.store.noLearn);
+            this.store.setKnown(this.store.known);
         },
         redirect() {
             router.push({name: 'FinalPage'});
@@ -105,7 +114,7 @@ export default {
                 Вернуться к предыдущему слову
             </div>
             <div class = "card" v-if="currentWord">
-                <img class="corner-img" src="/star.png" alt="star">
+                <button class="star-btn" @click="starWord"><img class="corner-img" src="/star.png" alt="star"></button>
                 <div class="word">{{ currentWord }}</div>
                 <div class = "button-container">
                     <button class = "like left" @click="dislikeWord"><img src="/dislike.png" alt="dislike"></button>
@@ -114,19 +123,18 @@ export default {
             </div>
             <div class="game-finished" v-else>
                 <h2>Все слова обработаны!</h2>
-                <p>Слов добавлено в деку: {{ countadded }}</p>
-                <p>Слов пропущено: {{ noLearn.length }}</p>
+                <p>Слов добавлено в деку: {{ store.yesLearn.length }}</p>
+                <p>Слов пропущено: {{ store.noLearn.length }}</p>
+                <p>Известных слов: {{ store.known.length }}</p>
             </div>
             <div v-if ="currentWord">
               <h2>Слов осталось: {{ countleft }}</h2>
-            <h2>Слов добавлено в деку: {{ countadded }}</h2>  
+            <h2>Слов добавлено в деку: {{ store.yesLearn.length }}</h2>  
             </div>
             <div v-else>
                 <BaseButton class = "submit" @click="redirect">Начать генерацию</BaseButton>
             </div>
-            
         </div>
-        
    </main>
 </template>
 
@@ -264,5 +272,15 @@ export default {
         height: 60px;   
         border-radius: 0px;
         padding: 0;
+    }
+    .star-btn {
+        background: transparent;
+        border: none;
+        position: absolute;
+        top: 15px;
+        right: 25px;
+        padding: 0;
+        cursor: pointer;
+        z-index: 2;
     }
 </style>
