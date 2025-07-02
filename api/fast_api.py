@@ -18,7 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+#test comment
 @app.get("/")
 def root():
     return {"message": "FastAPI работает!"}
