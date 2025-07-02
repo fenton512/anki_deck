@@ -12,8 +12,8 @@ export default {
             words: [],
             isVisiable: false,
             resp: {
-                wantLearn: [],
-                dontWantLearn: [],
+                unknown_words: [],
+                known_words: [],
                 count: 0
             },
         }
@@ -69,10 +69,10 @@ export default {
             for (let word of this.words) {
                 switch (word.class) {
                     case "wantLearn":
-                        this.resp.wantLearn.push(word.word);
+                        this.resp.unknown_words.push(word.word);
                         break;
                     case "neverLearn":
-                        this.resp.dontWantLearn.push(word.word);
+                        this.resp.known_words.push(word.word);
                         break;
                 }
             }
@@ -89,9 +89,9 @@ export default {
         <h1>Выделение слов <span class="question-mark" @mouseover="isVisiable = true" @mouseleave="isVisiable = false">?
             <span v-if="isVisiable" class="user-hint">Кликни по слову чтобы задать ему статус:<br><span style="background-color: #71c686;">Зеленые:</span>
             неизвестные слова, которые ты хочешь учить<br>
-            <span style="background-color: #B74747;">Красные:</span> слова, которые ты не хочешь учить</span>
-        </span>
-    </h1>
+                <span style="background-color: #B74747;">Красные:</span> слова, которые ты не хочешь учить</span>
+            </span>
+        </h1>
         <div class="text-area" >
             <span v-for="(word, index) in words">
             <span>{{word.extrChars[0]}}</span>

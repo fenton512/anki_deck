@@ -3,9 +3,9 @@ import { defineStore } from "pinia";
 export const useAPIStore = defineStore("API", {
     state: () => ({
         data: {
-            wantLearn: [],
-            dontWantLearn: [],
-            count: 0
+            unknown_words: [],
+            known_words: [],
+            count: 10
         }
     }),
     actions: {
