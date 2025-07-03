@@ -33,6 +33,11 @@ export const useUserTextStore = defineStore('userText', {
             this.noLearn = [];
             this.countLearn = 0;
             this.known = [];
+        },
+        startAgain() {
+            this.yesLearn = [];
+            this.noLearn = [];
+            this.known = [];
         }
     },
     persist: {

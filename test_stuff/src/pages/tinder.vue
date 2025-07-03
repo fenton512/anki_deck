@@ -92,7 +92,7 @@ export default {
             this.store.setKnown(this.store.known);
         },
         redirect() {
-            router.push({name: 'FinalPage'});
+            router.push({name: 'Review'});
         },
         goFilter() {
             router.push({name: "Filter"})
