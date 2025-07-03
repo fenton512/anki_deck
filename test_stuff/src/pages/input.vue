@@ -18,6 +18,7 @@ export default {
     mounted() { 
         //this variable represents store, you can use all its actions as methods
         this.textStore = useUserTextStore();
+        this.isDone = true;
     },
     components: {
         BaseButton
