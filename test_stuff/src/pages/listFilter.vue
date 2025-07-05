@@ -1,19 +1,21 @@
 <script>
 import Basebutton from '@/components/Basebutton.vue';
 import { useAPIStore } from '@/stores/API';
+import { useUserTextStore } from '@/stores/userText';
+import { nextTick } from 'vue';
 
 export default {
-    data() {
+    data() {    
         return {
             isVisible: false,
             cardNumStart: 1,
             cardNumTotal: 0,
             counter: 0,
-            wordList: ["word1", "word2", "word3", "word4", "word5", "word6", "word7", "word8"],
+            wordList: [],
             scrollerWidth: 0,
             cardWidth: 0,
             gap: 0,
-            currentPage: 1,
+            currentPage: 0,
             maxPage: 0,
             direction: null, // 0 - next page for translation, 1 - previous page for translation
         }
@@ -26,23 +28,27 @@ export default {
             let distance = (this.cardWidth+this.gap)*4;
             switch (this.direction) {
                 case 0:
-                    this.$refs.scroller.style.transform = `translateX(-${(this.currentPage-1)*distance}px)`;
+                    this.$refs.scroller.style.transform = `translateX(-${(this.currentPage)*distance}px)`;
                     break;
                 case 1:
-                    this.$refs.scroller.style.transform = `translateX(+${(this.currentPage-1)*distance}px)`;
+                    this.$refs.scroller.style.transform = `translateX(-${(this.currentPage-1)*distance}px)`;
                     break;
                 
             }
         },
         moveForward(){
-            this.direction = 0; 
-            if (this.currentPage < this.maxPage) 
-                this.currentPage++
+            this.direction = 0;
+            if (this.currentPage < this.maxPage-1){
+                this.currentPage++;
+                this.translate();
+            }
         },
         moveBack(){
             this.direction = 1;
-            if (this.currentPage > 1)
-                this.currentPage--
+            if (this.currentPage > 0){
+                this.translate();
+                this.currentPage--;
+            }
         },
         updateSizes(){
             if (!this.$refs.card[0] || !this.$refs.scroller || this.$refs.card[0].length === 0)
@@ -54,19 +60,45 @@ export default {
             // this.maxPage = Math.floor((this.cardWidth*cardNum+(cardNum-1)*this.gap) / ((this.cardWidth+this.gap)*4))
             this.maxPage = Math.ceil(this.wordList.length/4)
             
-        }
+        },
+        changeClass(index){
+            let classes = ["wantLearn", "dontWantLearn", "default"];
+            let word = this.wordList[index];
+            let classNum = classes.indexOf(word.class);
+            let nextClass = classes[(classNum+1)%3];
+            word.class = nextClass;
+        },
+        validateWords() {
+            let wordArr = useUserTextStore().text.split(/\s/);
+            this.wordList = wordArr.map((word) => {
+                let regex = /[a-zA-Z'`’-]+/;
+                let newWord = regex.exec(word);
+                if (newWord != null) {
+                    return {
+                    word: newWord[0],
+                    class: "default"
+                    }
+                }else {
+                    return {
+                        word: "BAD WORD",
+                        class: ""
+                    }
+                }
+            })
+        },
     },
     mounted() {
-        this.updateSizes();
+        this.validateWords();
+        this.$nextTick(() => this.updateSizes());
         window.addEventListener("resize", this.updateSizes);
     },
     unmounted(){
         window.removeEventListener('resize', this.updateSizes);
     },
     watch: {
-        currentPage(){
-            this.translate()
-        }
+        // currentPage(){
+        //     this.translate()
+        // }
     },
 }
 </script>
@@ -75,7 +107,7 @@ export default {
     <div class="main-container">
         <h1>Выбор слов из текста
             <span class="question-mark" @mouseover="isVisible=true" @mouseout="isVisible=false">?
-                <span v-if="isVisible" class="user-hint">Кликни по карточке со словом, чтобы задать ему статус:<br><span style="background-color: #71c686;">Зеленые карточки:</span>
+                <span v-if="isVisible" class="user-hint">Кликни по карточке со словом, чтобы задать ей статус:<br><span style="background-color: #71c686;">Зеленые карточки:</span>
                 неизвестные слова, которые ты хочешь учить<br>
                 <span style="background-color: #B74747;">Красные карточки:</span> слова, которые ты не хочешь учить</span>
             </span>
@@ -84,12 +116,22 @@ export default {
             <span class="card-number">Слова {{cardNumStart}}-{{cardNumStart+4}} из {{cardNumTotal}}</span>
             <div class="card-container">
                 <div class="scroller" ref="scroller">
-                    <div ref="card" class="card" v-for="word, index in wordList" :key="index">{{word}}</div>
+                    <div ref="card"
+                        @click="changeClass(index)" 
+                        v-for="word, index in wordList" 
+                        :key="index" 
+                        :class="['card', word.class]">
+                        {{word.word}}
+                    </div>
                 </div>
             </div>
-            <span class="card-picked">Выбрано слов {{counter}} из {{cardNumTotal}}</span>
-            <Basebutton @click="moveForward">Прокрутка вперед</Basebutton>
-            <Basebutton @click="moveBack"> Прокрутка назад</Basebutton>
+            <div class="bottom-contaiter">
+                <span class="card-picked">Выбрано слов {{counter}} из {{cardNumTotal}}</span>
+                <div class="router-buttons-container">
+                    <Basebutton class="router-button" @click="moveBack"> Прокрутка назад</Basebutton>
+                    <Basebutton class="router-button" @click="moveForward">Прокрутка вперед</Basebutton>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -165,6 +207,29 @@ export default {
         gap: 25px;
         flex-wrap:nowrap;
         width: 100%;
+        transition: transform 0.5s cubic-bezier(0.255, 0.765, 0.575, 0.925);
 
     }
+    .wantLearn{
+        border-color: #71c686;
+    }
+    .dontWantLearn{
+        border-color: #B74747;
+    }
+    .default{
+        border-color: inherit;
+    }
+    .router-buttons-container{
+        display: flex;   
+        padding-top: 30px;
+        justify-content: space-around;
+    }
+    .card-picked{
+        flex-shrink: 0;
+    }
+    .router-button{
+        width: 240px;
+        height: auto;
+    }
+
 </style>
