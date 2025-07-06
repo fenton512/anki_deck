@@ -12,7 +12,6 @@ export default {
             userText: '',
             isDone: true,
             validatedText: '',
-            textStore: null,
         }
     },
     mounted() {
