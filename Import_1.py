@@ -1,6 +1,9 @@
 import spacy
 import re
 
+#fastapi test
+
+
 
 def splitting(str_text):
     nlp = spacy.load("en_core_web_sm")#magic model for English language processing
