@@ -5,20 +5,20 @@ import { defineStore } from "pinia";
 
 export const useUserTextStore = defineStore('userText', {
     state: () => ({
-        text: '',
+        text: ''
     }),
     actions: {
         setText(text) {
             this.text = text;
-        }
+        },
     },
     persist: {
         enabled: true,
-        storageies: [
+        strategies: [
             {
                 key: "userText",
-                strorage: sessionStorage,
-                paths: ['text'] 
+                storage: sessionStorage,
+                paths: ['text']
             }
         ]
     }

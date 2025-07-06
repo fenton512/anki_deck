@@ -1,25 +1,102 @@
 <script> 
 import BaseButton from '@/components/Basebutton.vue';
 import router from '@/router';
-
+import { useUserTextStoreV } from '@/stores/userTextV';
 
 export default {
     data() {
         return {
             countleft: 0,
-            countadded: 0
+            countadded: 0,
+            words: [],
+            currentIndex: 0,
+            currentWord: '',
+        }
+    },
+    computed: {
+        store() {
+            return useUserTextStoreV();
         }
     },
     mounted() { 
-
+        this.initializeGame();
     },
     components: {
         BaseButton
     },
     methods: {
-        goBack() {
-            router.push({name: 'Filter'});
+        initializeGame() {
+            this.words = this.store.words;
+            this.countleft = this.words.length;
+            this.countadded = 0;
+            this.currentIndex = 0;
+            this.updateCurrentWord();
         },
+        updateCurrentWord() {
+            if (this.currentIndex < this.words.length) {
+                this.currentWord = this.words[this.currentIndex];
+            } else {
+                this.currentWord = '';
+            }
+        },
+        likeWord() {
+            if (this.currentIndex < this.words.length) {
+                this.store.yesLearn.push(this.currentWord);
+                this.countadded++;
+                this.nextWord();
+            }
+        },
+        dislikeWord() {
+            if (this.currentIndex < this.words.length) {
+                this.store.noLearn.push(this.currentWord);
+                this.nextWord();
+            }
+        },
+        starWord() {
+            if (this.currentIndex < this.words.length) {
+                this.store.known.push(this.currentWord);
+                this.nextWord();
+            }
+        },
+        nextWord() {
+            this.currentIndex++;
+            this.countleft = this.words.length - this.currentIndex;
+            this.updateCurrentWord();
+            if (this.currentIndex >= this.words.length) {
+                this.finishGame();
+            }
+        },
+        goBack() {
+            if (this.currentIndex > 0) {
+                this.currentIndex--;
+                this.countleft = this.words.length - this.currentIndex;
+                // Remove from the correct list if going back
+                const prevWord = this.words[this.currentIndex];
+                if (this.store.yesLearn.length > 0 && this.store.yesLearn[this.store.yesLearn.length - 1] === prevWord) {
+                    this.store.yesLearn.pop();
+                    this.countadded--;
+                } else if (this.store.noLearn.length > 0 && this.store.noLearn[this.store.noLearn.length - 1] === prevWord) {
+                    this.store.noLearn.pop();
+                } else if (this.store.known.length > 0 && this.store.known[this.store.known.length - 1] === prevWord) {
+                    this.store.known.pop();
+                }
+                this.updateCurrentWord();
+            } else {
+                router.push({name: 'Filter'});
+            }
+        },
+        finishGame() {
+            // Save lists to store explicitly (in case of reactivity issues)
+            this.store.setYes(this.store.yesLearn);
+            this.store.setNo(this.store.noLearn);
+            this.store.setKnown(this.store.known);
+        },
+        redirect() {
+            router.push({name: 'Review'});
+        },
+        goFilter() {
+            router.push({name: "Filter"})
+        }
     },
     watch: {
     }
@@ -29,25 +106,35 @@ export default {
 <template>
    <main>
     <header>
-        <h2 @click="goBack"><-- Вернуться назад</h2>
+        <h2 @click="goFilter"><-- Вернуться к фильтрам</h2>
     </header>
         <div class = "header">Тиндер слов</div>
         <div class = "card-container">
-            <div class = "goBack">
+            <div class = "goBack" @click="goBack">
                 Вернуться к предыдущему слову
             </div>
-            <div class = "card">
-                <img class="corner-img" src="/star.png" alt="star">
-                <div class="word">Word</div>
+            <div class = "card" v-if="currentWord">
+                <button class="star-btn" @click="starWord"><img class="corner-img" src="/star.png" alt="star"></button>
+                <div class="word">{{ currentWord }}</div>
                 <div class = "button-container">
-                    <button class = "like left"><img src="/dislike.png" alt="disike"></button>
-                    <button class = "like right"><img src="/like.png" alt="like"></button>
+                    <button class = "like left" @click="dislikeWord"><img src="/dislike.png" alt="dislike"></button>
+                    <button class = "like right" @click="likeWord"><img src="/like.png" alt="like"></button>
                 </div>
             </div>
-            <h2>Слов осталось: {{ countleft }}</h2>
-            <h2>Слов добавлено в деку: {{ countadded }}</h2>
+            <div class="game-finished" v-else>
+                <h2>Все слова обработаны!</h2>
+                <p>Слов добавлено в деку: {{ store.yesLearn.length }}</p>
+                <p>Слов пропущено: {{ store.noLearn.length }}</p>
+                <p>Известных слов: {{ store.known.length }}</p>
+            </div>
+            <div v-if ="currentWord">
+              <h2>Слов осталось: {{ countleft }}</h2>
+            <h2>Слов добавлено в деку: {{ store.yesLearn.length }}</h2>  
+            </div>
+            <div v-else>
+                <BaseButton class = "submit" @click="redirect">Начать генерацию</BaseButton>
+            </div>
         </div>
-        
    </main>
 </template>
 
@@ -151,5 +238,49 @@ export default {
         text-align: center;
         font-size: 20px;
         font-weight: 350;
+    }
+    .card-container h2{
+        text-align: center;
+        font-size: 20px;
+        font-weight: 350;
+    }
+    .game-finished {
+        width: 100%;
+        height: 230px;
+        border: 2px solid white;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    .game-finished h2 {
+        font-size: 28px;
+        margin-bottom: 20px;
+        font-weight: 400;
+    }
+    .game-finished p {
+        font-size: 18px;
+        margin: 5px 0;
+        opacity: 0.9;
+    }
+    .submit {
+        margin: 0 auto;
+        margin-top: 3em;
+        width: 255px;
+        height: 60px;   
+        border-radius: 0px;
+        padding: 0;
+    }
+    .star-btn {
+        background: transparent;
+        border: none;
+        position: absolute;
+        top: 15px;
+        right: 25px;
+        padding: 0;
+        cursor: pointer;
+        z-index: 2;
     }
 </style>

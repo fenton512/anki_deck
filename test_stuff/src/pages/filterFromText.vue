@@ -3,6 +3,7 @@ import { useUserTextStore } from '@/stores/userText';
 import Basebutton from '@/components/Basebutton.vue';
 import router from '@/router';
 import {useAPIStore} from "@/stores/API";
+
 export default {
     data() {
         return {
@@ -105,6 +106,7 @@ export default {
             </span>
         </div>
         <div class="button-container">
+
             <Basebutton class="start-generation" @click="startGeneration()">Начать генерацию</Basebutton>
         </div>
     </div>
