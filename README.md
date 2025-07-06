@@ -8,6 +8,15 @@ link to the Kanban board: https://github.com/orgs/AnkiGen/projects/2/views/1
 | Ready to Deploy | - MR is approved<br>- No merge conflicts<br>- All review feedback is addressed |
 | Done          | - User feedback is received<br>- Critical bugs are fixed (or split into new issues)<br>- Documentation updated (if needed) |
 
+### Build and deployment
+  #### Continuous Integration
+      Link to CI: https://github.com/AnkiGen/anki_deck/blob/master/.github/workflows/main.yml
+      List of tools:
+        - ubuntu
+        - unittest
+        - pytest
+      CI workflows runs: https://github.com/AnkiGen/anki_deck/blob/backend/test_results.txt
+
 ### Git workflow
 In our project we adapted base GitHub flow
 1. Creating issues: we use several templates for the issues (https://github.com/AnkiGen/anki_deck/tree/templates/.github/ISSUE_TEMPLATE). The most commonly used are User Story, Issue and Bug report
