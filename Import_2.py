@@ -1,6 +1,6 @@
 import spacy
 
-#fastapi test
+#fastapi
 
 
 def lemmatization(json_data):
