@@ -21,8 +21,7 @@ client = OpenAI(
 )
 
 
-def generate_prompt(unknown_words,known_words,count):
-
+def generate_prompt(unknown_words, dont_want_learn):
     return f"""
 You are a language tutor helping create flashcards for learning English.
 
@@ -39,8 +38,7 @@ For each word in the list of unknown words, create
   `word;word_translation;sentence1;sentence1_translation;sentence2;sentence2_translation;sentence3;sentence3_translation`.
 
 Unknown words: {', '.join(unknown_words)}
-Known words: {', '.join(known_words)}
-
+Don't want words: {', '.join(dont_want_learn)}
 
 Output:
 Translation and sentences with their translations for each unknown word, all per line, formatted as:
@@ -48,8 +46,8 @@ word;word_translation;sentence1;sentence1_translation;sentence2;sentence2_transl
 """.strip()
 
 
-def request_sentences(unknown_words,known_words,count):#add arguements
-    prompt = generate_prompt(unknown_words,known_words,count)# add arguements
+def request_sentences(unknown_words, dont_want_learn):
+    prompt = generate_prompt(unknown_words, dont_want_learn)
 
     completion = client.chat.completions.create(
         model="gpt-4o-mini",  # Или "gpt-4o-mini", если хочешь
@@ -61,28 +59,11 @@ def request_sentences(unknown_words,known_words,count):#add arguements
 
     return completion.choices[0].message.content
 
-def parse_response_to_dicts(response_text):
-    rows = []
-    for line in response_text.strip().split('\n'):
-        parts = line.split(';')
-        if len(parts) == 8:
-            rows.append({
-                "word": parts[0],
-                "word_translation": parts[1],
-                "sentence1": parts[2],
-                "sentence1_translation": parts[3],
-                "sentence2": parts[4],
-                "sentence2_translation": parts[5],
-                "sentence3": parts[6],
-                "sentence3_translation": parts[7],
-            })
-    return rows
-
-
 
 def write_cards_to_csv(response_text):
     csv_in_memory = io.StringIO(newline="")
-    fieldnames = ["word","lemma", "word_translation", "sentence1", "sentence1_translation", "sentence2", "sentence2_translation", "sentence3", "sentence3_translation"]
+    fieldnames = ["word", "word_translation", "sentence1", "sentence1_translation", "sentence2",
+                  "sentence2_translation", "sentence3", 'sentence3_translation']
     writer = csv.DictWriter(csv_in_memory, fieldnames=fieldnames)
     writer.writeheader()
     for row in response_text:

@@ -1,123 +1,184 @@
+
+import uvicorn
 from fastapi import FastAPI, Query,Request
 from fastapi.responses import JSONResponse
+
 from sqlite3 import connect
-from gpt import request_sentences, write_cards_to_csv, parse_response_to_dicts
 import os
 from fastapi.middleware.cors import CORSMiddleware
 from decryptors import *
-from pydantic import BaseModel
-from typing import List
-
+from gpt import request_sentences, write_cards_to_csv
 
 app = FastAPI()
 basedir = os.path.abspath(os.path.dirname(__file__))
 data_file = os.path.join(basedir, 'anki_deck.db')
-con = connect(data_file)
-cur = con.cursor()
-
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["*"],  # разрешить всем
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
+#test comment
 @app.get("/")
 def root():
     return {"message": "FastAPI работает!"}
 
+
 @app.get("/user/get")
 async def get_user(login: str):
+    con = connect(data_file)
+    cur = con.cursor()
     ans = {
-    'id': cur.execute("SELECT user_id FROM user WHERE login = ?", (login,)).fetchone()[0],
-    'login': login,
-    'encrypted_password': cur.execute("SELECT encrypted_password FROM user WHERE login = ?",
-                                      (login,)).fetchone()[0]
+        'id': cur.execute("SELECT user_id FROM user WHERE login = ?", (login,)).fetchone(),
+        'login': login,
+        'encrypted_password': cur.execute("SELECT encrypted_password FROM user WHERE login = ?",
+                                          (login,)).fetchone()
     }
+    con.close()
+    if ans['id']:
+        ans['id'] = ans['id'][0]
+    if ans['encrypted_password']:
+        ans['encrypted_password'] = ans['encrypted_password'][0]
     return ans
 
 
-@app.post("/user/post/{login}/{encrypted_password}")
+@app.get("/user/post/{login}/{encrypted_password}")
 async def post_user(login: str, encrypted_password: str):
+    con = connect(data_file)
+    cur = con.cursor()
+    ids = cur.execute("SELECT user_id FROM user WHERE login = ?", (login,)).fetchone(),
+    if ids:
+        return {"status": 'ok', "text": f'Login "{login}" already exists.'}
     cur.execute("INSERT INTO user (login, encrypted_password) VALUES (?, ?)", (login, encrypted_password))
     con.commit()
+    con.close()
     return {"status": 'ok'}
 
 
 @app.get("/deck/get")
 async def get_deck(deck_id: int):
+    con = connect(data_file)
+    cur = con.cursor()
     ans = {
         'deck_id': deck_id,
         'cards': decode_blob(cur.execute("SELECT cards FROM decks WHERE deck_id = ?",
-                                         (deck_id,)).fetchall()[0]),
-        'user_id': cur.execute("SELECT user_id FROM decks WHERE deck_id = ?", (deck_id,)).fetchone()[0]
+                                         (deck_id,)).fetchall()),
+        'user_id': cur.execute("SELECT user_id FROM decks WHERE deck_id = ?", (deck_id,)).fetchone()
     }
+    con.close()
+    if ans['cards']:
+        ans['cards'] = ans['cards'][0]
+    if ans['user_id']:
+        ans['user_id'] = ans['user_id'][0]
     return ans
 
 
-@app.post("/deck/post")
+@app.get("/deck/post")
 async def post_deck(user_id: int, cards: list[int] = Query()):
+    con = connect(data_file)
+    cur = con.cursor()
     cur.execute("INSERT INTO decks (user_id, cards) VALUES (?, ?)", (user_id, array_to_blob(cards)))
     con.commit()
+    con.close()
     return {"status": 'ok'}
 
 
 @app.get("/card/get")
 async def get_card(card_id: int):
+    con = connect(data_file)
+    cur = con.cursor()
     ans = {
         'card_id': card_id,
-        'word_id': cur.execute("SELECT word_id FROM cards WHERE card_id = ?", (card_id,)).fetchone()[0],
+        'word_id': cur.execute("SELECT word_id FROM cards WHERE card_id = ?", (card_id,)).fetchone(),
         'sentences': decode_blob(cur.execute("SELECT sentences FROM cards WHERE card_id = ?",
-                                         (card_id,)).fetchall()[0])
+                                             (card_id,)).fetchall())
     }
+    con.close()
+    if ans['sentences']:
+        ans['sentences'] = ans['sentences'][0]
+    if ans['word_id']:
+        ans['word_id'] = ans['word_id'][0]
     return ans
 
 
-@app.post("/card/post")
-async def post_card(word_id: int,  sentences: list[str] = Query()):
-    cur.execute("INSERT INTO cards (word_id, sentences) VALUES (?, ?)", (word_id, array_to_blob(sentences)))
+@app.get("/card/post")
+async def post_card(word_id: int, sentences: list[str] = Query()):
+    con = connect(data_file)
+    cur = con.cursor()
+    cur.execute("INSERT INTO cards (word_id, sentences) VALUES (?, ?)", (word_id,
+                                                                         array_to_blob(sentences)))
     con.commit()
+    con.close()
     return {"status": 'ok'}
 
 
 @app.get("/word/get_by_word")
 async def get_by_word(word: str):
+    con = connect(data_file)
+    cur = con.cursor()
     ans = {
-        'word_id': cur.execute("SELECT word_id FROM words WHERE word = ?", (word,)).fetchone()[0],
+        'word_id': cur.execute("SELECT word_id FROM words WHERE word = ?", (word,)).fetchone(),
         'word': word,
         'translations': cur.execute("SELECT translations FROM words WHERE word = ?",
-                                    (word,)).fetchone()[0],
+                                    (word,)).fetchone(),
         'context_sentence': cur.execute("SELECT context_sentence FROM words WHERE word = ?",
-                                        (word,)).fetchone()[0],
-        'is_important': bool(cur.execute("SELECT is_important FROM words WHERE word = ?",
-                                    (word,)).fetchone()[0]),
+                                        (word,)).fetchone(),
+        'is_important': cur.execute("SELECT is_important FROM words WHERE word = ?",
+                                         (word,)).fetchone(),
         'user_id': cur.execute("SELECT user_id FROM words WHERE word = ?",
-                               (word,)).fetchone()[0]
+                               (word,)).fetchone()
     }
+    con.close()
+    if ans['word_id']:
+        ans['word_id'] = ans['word_id'][0]
+    if ans['translations']:
+        ans['translations'] = ans['translations'][0]
+    if ans['context_sentence']:
+        ans['context_sentence'] = ans['context_sentence'][0]
+    if ans['is_important']:
+        ans['is_important'] = ans['is_important'][0]
+    if ans['user_id']:
+        ans['user_id'] = ans['user_id'][0]
     return ans
 
 
 @app.get("/word/get_by_id")
 async def get_by_id(word_id: int):
+    con = connect(data_file)
+    cur = con.cursor()
     ans = {
         'word_id': word_id,
-        'word': cur.execute("SELECT word FROM words WHERE word_id = ?", (word_id,)).fetchone()[0],
+        'word': cur.execute("SELECT word FROM words WHERE word_id = ?", (word_id,)).fetchone(),
         'translations': cur.execute("SELECT translations FROM words WHERE word_id = ?",
-                                    (word_id,)).fetchone()[0],
+                                    (word_id,)).fetchone(),
         'context_sentence': cur.execute("SELECT context_sentence FROM words WHERE word_id = ?",
-                                        (word_id,)).fetchone()[0],
-        'is_important': bool(cur.execute("SELECT is_important FROM words WHERE word_id = ?",
-                                    (word_id,)).fetchone()[0]),
+                                        (word_id,)).fetchone(),
+        'is_important': cur.execute("SELECT is_important FROM words WHERE word_id = ?",
+                                         (word_id,)).fetchone(),
         'user_id': cur.execute("SELECT user_id FROM words WHERE word_id = ?",
-                               (word_id,)).fetchone()[0]
+                               (word_id,)).fetchone()
     }
+    con.close()
+    if ans['word']:
+        ans['word'] = ans['word'][0]
+    if ans['translations']:
+        ans['translations'] = ans['translations'][0]
+    if ans['context_sentence']:
+        ans['context_sentence'] = ans['context_sentence'][0]
+    if ans['is_important']:
+        ans['is_important'] = bool(ans['is_important'][0])
+    if ans['user_id']:
+        ans['user_id'] = ans['user_id'][0]
     return ans
 
 
-@app.post("/word/post")
+@app.get("/word/post")
 async def post_word(word: str, translations: str, context_sentence: str, is_important: bool, user_id: int, mode: str):
+    con = connect(data_file)
+    cur = con.cursor()
     cur.execute("INSERT INTO words (word, translations, context_sentence, is_important, user_id)"
                 " VALUES (?, ?, ?, ?, ?)", (word, translations, context_sentence, int(is_important), user_id))
     word_id = cur.execute("SELECT word_id FROM words").fetchall()[-1][0]
@@ -128,8 +189,17 @@ async def post_word(word: str, translations: str, context_sentence: str, is_impo
     else:
         cur.execute("INSERT INTO unwanted_words (word_id) VALUES (?)", (word_id,))
     con.commit()
+    con.close()
     return {"status": 'ok'}
 
+@app.get("/wordlist/get")
+async def get_wordlist(count: int,
+                       wantLearn: list[str] = Query(),
+                       dontWantLearn: list[str] = Query()):
+    response_text = request_sentences(wantLearn, dontWantLearn)
+    return write_cards_to_csv(response_text)
+  
+  
 class WordListRequest(BaseModel):
     unknown_words: List[str]
     known_words:List[str]
@@ -147,4 +217,7 @@ async def post_text(payload: WordListRequest):
 @app.options("/wordlist/post")
 async def options_wordlist_post(request: Request):
     return JSONResponse(status_code=200)
-
+  
+ 
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)

@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import WelcomPage from '@/pages/welcomPage.vue';
+
 import Filter from '@/pages/filter.vue';
 import FinalPage from '@/pages/finalPage.vue';
 import Input from '@/pages/input.vue';
@@ -18,7 +19,6 @@ const routes = [
   { path: '/filterText', name: 'FilterFromText', component: FilterFromText},
   { path: '/filterList', name: 'List', component: FilterList},
   { path: '/review', name: 'Review', component: Review}
-
 ];
 
 const router = createRouter({
