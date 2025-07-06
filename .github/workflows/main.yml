@@ -1,0 +1,45 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - backend
+  pull_request:
+    branches:
+      - main
+      - master
+      - backend
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v3
+
+      - name: Python downloading
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Installing dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Running unit tests
+        run: |
+          pytest tests/unit_tests1.py --maxfail=1 --disable-warnings -q > test_results.txt 2>&1
+
+      - name: Running integration tests
+        run: |
+          pytest tests/integration_tests.py --maxfail=1 --disable-warnings -q >> test_results.txt 2>&1
+
+      - name: Save log as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-log
+          path: test_results.txt

@@ -50,6 +50,7 @@ export default {
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+
         }
     }
 }
@@ -116,4 +117,5 @@ export default {
         width: 8%;
     }
 </style>
+
 

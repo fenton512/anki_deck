@@ -1,6 +1,8 @@
 <script> 
 import BaseButton from '@/components/Basebutton.vue';
 import router from '@/router';
+import { useUserTextStoreV } from '@/stores/userTextV';
+
 
 export default {
     data() {
@@ -18,6 +20,7 @@ export default {
                 const percent = ((slider.value - min) / (max - min)) * 100;
                 slider.style.background = `linear-gradient(to right, #34c759 ${percent}%, #fff ${percent}%)`;
             });
+            this.textStoreV = useUserTextStoreV();
     },
     components: {
         BaseButton
@@ -34,8 +37,11 @@ export default {
             router.push({name: 'Input'});
         },
         redirect(event) {
-            event.preventDefault();
+            // event.preventDefault();
             const names = ["Tinder", "FilterFromText", "List"];
+
+            this.textStoreV.setUnknown(this.lenword);
+            this.textStoreV.setCount(this.maxword);
             router.push({ name: names[this.choice] });
         }
     },
@@ -224,6 +230,7 @@ export default {
         margin-left: 0.5em;
         width: auto;
     }
+    
     .header {
         font-family: "Roboto", sans-serif;
         font-optical-sizing: auto;
