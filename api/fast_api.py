@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from decryptors import *
 from pydantic import BaseModel
 from typing import List
+from Appearance import is_word_in_generated_sentences,validate_response_sentences
 
 
 app = FastAPI()
@@ -140,9 +141,24 @@ async def post_text(payload: WordListRequest):
     unknown_words = payload.unknown_words
     known_words = payload.known_words
     count = payload.count
-    response_text = request_sentences(unknown_words,known_words,count)
-    rows = parse_response_to_dicts(response_text)
-    return write_cards_to_csv(rows)
+
+    words_to_generate = unknown_words.copy()
+    correct_rows = []
+
+    while words_to_generate:
+        response_text = request_sentences(words_to_generate, known_words, count)
+        rows = parse_response_to_dicts(response_text)
+        still_incorrect = []
+        for row in rows:
+            word = row["word"]
+            sentences = [row["sentence1"], row["sentence2"], row["sentence3"]]
+            if is_word_in_generated_sentences(word, sentences):
+                correct_rows.append(row)
+            else:
+                still_incorrect.append(word)
+        words_to_generate = still_incorrect
+
+    return write_cards_to_csv(correct_rows)
 
 @app.options("/wordlist/post")
 async def options_wordlist_post(request: Request):

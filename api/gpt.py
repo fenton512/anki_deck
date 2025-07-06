@@ -4,15 +4,13 @@ import spacy
 from gtts import gTTS
 from fastapi.responses import PlainTextResponse
 import csv
-import base64
-
 
 nlp = spacy.load("en_core_web_sm")
 
 # Создай клиента с токеном
 client = OpenAI(
     # замените на свой ключ
-    api_key=""
+    api_key="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"
 )
 
 
