@@ -1,8 +1,8 @@
 import spacy
 import re
 
-#fastapi
-
+#fastapi s s
+ 
 
 
 def splitting(str_text):
