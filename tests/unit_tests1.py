@@ -9,6 +9,7 @@ class TestSplittingFunction(unittest.TestCase):
 
     def test_basic_sentence(self):
         text = "Hello, world! It's a beautiful day."
+
         result1 = splitting(text)
         result = []
         for token in result1.keys():
@@ -32,7 +33,6 @@ class TestSplittingFunction(unittest.TestCase):
         for token in result1.keys():
             if result1[token]:
                 result.append(token)
-
         self.assertNotIn("The", result)
         self.assertNotIn("over", result)
         self.assertNotIn("the", result)
@@ -51,12 +51,12 @@ class TestSplittingFunction(unittest.TestCase):
         for token in result1.keys():
             if result1[token]:
                 result.append(token)
-
         self.assertIn("well-known", result)
         self.assertIn("e-mail", result)
 
     def test_non_matching_tokens_excluded(self):
         text = "1234 !@#$%"
+
         result1 = splitting(text)
         result = []
         for token in result1.keys():
@@ -172,6 +172,7 @@ class TestLemmatization(unittest.TestCase):
         self.assertEqual(result["known_words"]["cats"][0], "cat")
         self.assertEqual(result["unknown_words"]["dogs"][0], "dog")
         self.assertEqual(result["unwanted_words"]["mice"][0], "mouse")
+
 
 
 class TestAppearance(unittest.TestCase):

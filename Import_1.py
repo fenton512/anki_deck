@@ -12,6 +12,7 @@ def splitting(str_text):
     clickable = []# List to store tokens that are clickable
     export = {}# Dictionary to store unique tokens and their clickable status
 
+
     infixes = nlp.Defaults.infixes
 
     infixes = [pattern for pattern in infixes if '-' not in pattern]
@@ -46,3 +47,4 @@ def splitting(str_text):
                 export[token] = False
 
     return export
+

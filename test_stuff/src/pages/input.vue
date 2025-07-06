@@ -1,7 +1,7 @@
-
 <script> 
 import BaseButton from '@/components/Basebutton.vue';
 import router from '@/router';
+import { useUserTextStoreV } from '@/stores/userTextV';
 import { useUserTextStore } from '@/stores/userText';
 
 
@@ -11,14 +11,16 @@ export default {
             pickedWords: new Array(),
             userText: '',
             isDone: true,
+            valid: true,
+            store: null,
             validatedText: '',
-            textStore: null,
         }
     },
-    mounted() { 
+    mounted() {
+        // this.fatchdata() 
         //this variable represents store, you can use all its actions as methods
+        this.textStoreV = useUserTextStoreV();
         this.textStore = useUserTextStore();
-        this.isDone = true;
     },
     components: {
         BaseButton
@@ -28,8 +30,10 @@ export default {
     //when all features on this page will be finished
         async fatchdata() {
             this.pickWords();
-            const resp = {
-                unknown_words: this.pickedWords,
+            const resp = { // add
+                unknown_words: ["kill","survive","climb"],
+                known_words:["dog","cat","emansipation","Russia"],
+                count:6
             };
             const response = await fetch("https://anki.dbpg.ru/wordlist/get", {
                 method: "POST",
@@ -57,15 +61,30 @@ export default {
         },
         goToFilterText() {
             //using Store variable to set user text
-            router.push({name: "FilterFromText"});
+            router.push({name: "Filter"});
         },
         showProccessingTitle() {
             let div = document.createElement('div');
             div.innerHTML = "Proccessing...";
         },
         goToFilter() {
-            this.textStore.setText(this.userText);
-            router.push({name: 'Filter'});
+            const words = this.userText.trim().split(/\s+/).filter(word => word.length > 0);
+            const wordCount = words.length;
+
+            if (wordCount < 5) {
+                alert('Пожалуйста, введите как минимум 5 слов.');
+                return;
+            }
+            
+            if (wordCount > 500) {
+                alert('Пожалуйста, введите не более 500 слов.');
+                return;
+            }
+            else {
+                this.textStoreV.setText(words);
+                this.textStore.setText(this.userText);
+                router.push({name: "Filter"})
+            }
         },
         goBack() {
             router.push({name: "Welcom"})

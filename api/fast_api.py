@@ -1,5 +1,8 @@
+
 import uvicorn
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query,Request
+from fastapi.responses import JSONResponse
+
 from sqlite3 import connect
 import os
 from fastapi.middleware.cors import CORSMiddleware
@@ -189,19 +192,32 @@ async def post_word(word: str, translations: str, context_sentence: str, is_impo
     con.close()
     return {"status": 'ok'}
 
-
 @app.get("/wordlist/get")
 async def get_wordlist(count: int,
                        wantLearn: list[str] = Query(),
                        dontWantLearn: list[str] = Query()):
     response_text = request_sentences(wantLearn, dontWantLearn)
     return write_cards_to_csv(response_text)
+  
+  
+class WordListRequest(BaseModel):
+    unknown_words: List[str]
+    known_words:List[str]
+    count: int
 
+@app.post("/wordlist/post")
+async def post_text(payload: WordListRequest):
+    unknown_words = payload.unknown_words
+    known_words = payload.known_words
+    count = payload.count
+    response_text = request_sentences(unknown_words,known_words,count)
+    rows = parse_response_to_dicts(response_text)
+    return write_cards_to_csv(rows)
 
-@app.get("/wordlist/post")
-async def post_wordlist(unknown_words: list[str] = Query(), dont_want_learn: list[str] = Query()):
-    response_text = request_sentences(unknown_words, dont_want_learn)
-    return write_cards_to_csv(response_text)
-
+@app.options("/wordlist/post")
+async def options_wordlist_post(request: Request):
+    return JSONResponse(status_code=200)
+  
+ 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)

@@ -1,12 +1,23 @@
 from openai import OpenAI
 import io
+import spacy
+from gtts import gTTS
 from fastapi.responses import PlainTextResponse
 import csv
+import base64
+from dotenv import load_dotenv
+import os
 
-# Создай клиента с токеном
+
+
+nlp = spacy.load("en_core_web_sm")
+
+load_dotenv()
+openai_key = os.getenv("OPENAI_API_KEY")
+
+
 client = OpenAI(
-    # замените на свой ключ
-    api_key="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"
+    api_key=openai_key
 )
 
 
@@ -20,7 +31,8 @@ For each word in the list of unknown words, create
 - Clearly shows the meaning of the unknown word through context.
 - Sentences must sound natural and be understandable to a learner.
 - Do NOT define the word; use it in context.
-- Try to avoid words from list of don't want learn words.
+- Try to use less words from the known words list in the sentences.
+- Length of each sentence should be around {count} words.
 - Each word, his translation and sentences with their translations should be on a new line,
  prefixed with the word itself like:
   `word;word_translation;sentence1;sentence1_translation;sentence2;sentence2_translation;sentence3;sentence3_translation`.
@@ -55,5 +67,9 @@ def write_cards_to_csv(response_text):
     writer = csv.DictWriter(csv_in_memory, fieldnames=fieldnames)
     writer.writeheader()
     for row in response_text:
-        writer.writerow(row)
+        lemma = nlp(row["word"])[0].lemma_
+        row_with_lemma = {
+            "lemma": lemma,
+            **row}
+        writer.writerow(row_with_lemma)
     return PlainTextResponse(csv_in_memory.getvalue())

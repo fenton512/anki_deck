@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="31ea470c-a0c7-49f4-a6a1-c0dea29e598a" name="Changes" comment="Tests uploading" />
+    <list default="true" id="31ea470c-a0c7-49f4-a6a1-c0dea29e598a" name="Changes" comment="Tests uploading">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Import_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Import_1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Import_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/Import_2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit_tests1.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit_tests1.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -48,15 +53,12 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;Python tests.Python tests in integration_tests.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in unit_tests1.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.Import_1.executor&quot;: &quot;Run&quot;,
-    &quot;Python.Import_2.executor&quot;: &quot;Run&quot;,
-    &quot;Python.fast_api.executor&quot;: &quot;Run&quot;,
+
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;backend&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/nigga/PycharmProjects/anki_deck&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -185,17 +187,7 @@
     <MESSAGE value="GPT update" />
     <MESSAGE value="Tests uploading" />
     <option name="LAST_COMMIT_MESSAGE" value="Tests uploading" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/tests/unit_tests1.py</url>
-          <line>171</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/anki_deck$main.coverage" NAME="main Coverage Results" MODIFIED="1750505285064" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
