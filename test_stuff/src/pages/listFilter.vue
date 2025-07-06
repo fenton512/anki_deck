@@ -86,11 +86,19 @@ export default {
                 }
             })
         },
+        handleKeyDown(event){
+            if (event.key === "ArrowRight") {
+            this.moveForward();
+            } else if (event.key === "ArrowLeft") {
+            this.moveBack();
+            }
+        }
     },
     mounted() {
         this.validateWords();
         this.$nextTick(() => this.updateSizes());
         window.addEventListener("resize", this.updateSizes);
+        window.addEventListener("keydown", this.handleKeyDown)
     },
     unmounted(){
         window.removeEventListener('resize', this.updateSizes);
