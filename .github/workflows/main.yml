@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Repository checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Python downloading
         uses: actions/setup-python@v4
@@ -39,7 +39,7 @@ jobs:
           pytest tests/integration_tests.py --maxfail=1 --disable-warnings -q >> test_results.txt 2>&1
 
       - name: Save log as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-log
           path: test_results.txt
