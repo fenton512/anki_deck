@@ -11,10 +11,10 @@ User -> Frontend : Enter/paste text\nClick "Generate Deck"
 Frontend -> Backend : POST /wordlist/post\n(unknown_words, known_words, count)
 Backend -> GPT : Generate sentences for words
 GPT --> Backend : Sentences & translations
-Backend -> NLP : Validate sentences (is_word_in_generated_sentences)
+Backend -> NLP : Validate sentences 
 NLP --> Backend : Validation result
 alt All sentences valid
-    Backend -> FS : Save cards as CSV (write_cards_to_csv)
+    Backend -> FS : Save cards as CSV 
     FS --> Backend : CSV file content
     Backend --> Frontend : CSV file (Anki_deck.csv)
 else Some sentences invalid
