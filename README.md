@@ -31,7 +31,7 @@ In our project we adapted base GitHub flow
 8. Resolving Issues
 - rlosed automatically when PR is merged (via Closes #123)
 - reopen if bugs are found post-merge
-Git workflow using Gitgraph diagram
+### Git workflow using Gitgraph diagram
 https://www.mermaidchart.com/app/projects/87fa344a-ba3a-4698-a8cc-fff8011d213c/diagrams/9806633b-e6e0-429a-8bf9-b6178f25629b/share/invite/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N1bWVudElEIjoiOTgwNjYzM2ItZTZlMC00MjlhLThiZjktYjYxNzhmMjU2MjliIiwiYWNjZXNzIjoiVmlldyIsImlhdCI6MTc1MTgyNDIwMH0.wM7NipYQXLnSQ5szhIhBoJoWnuNj3Jegsmq-2Jji6bw
 ### Secrets management
 To protect sensitive data (API keys, passwords, tokens), we follow:
