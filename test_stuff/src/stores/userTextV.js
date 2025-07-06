@@ -5,11 +5,12 @@ import { defineStore } from "pinia";
 
 export const useUserTextStoreV = defineStore('userTextV', {
     state: () => ({
-        words: [],
-        yesLearn: [],
-        noLearn: [],
-        countLearn: 0,
-        known: []
+        words: [],  // to choose from in tinder and etc
+        yesLearn: [], // want to learn
+        noLearn: [], // dont want to learn
+        countLearn: 0, // max amount of words in text
+        known: [], // list of already known words
+        unknown: 0 // max amount of unknown words in sentence
     }),
     actions: {
         setText(text) {
@@ -26,6 +27,9 @@ export const useUserTextStoreV = defineStore('userTextV', {
         },
         setKnown(known) {
             this.known = known;
+        },
+        setUnknown(unknown) {
+            this.unknown = unknown;
         },
         resetStore() {
             this.words = [];

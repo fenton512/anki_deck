@@ -14,7 +14,6 @@ export default {
             valid: true,
             store: null,
             validatedText: '',
-            textStore: null,
         }
     },
     mounted() {

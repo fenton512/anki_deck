@@ -19,6 +19,7 @@ export default {
                 const percent = ((slider.value - min) / (max - min)) * 100;
                 slider.style.background = `linear-gradient(to right, #34c759 ${percent}%, #fff ${percent}%)`;
             });
+            this.textStoreV = useUserTextStoreV();
     },
     components: {
         BaseButton
@@ -35,10 +36,12 @@ export default {
             router.push({name: 'Input'});
         },
         redirect(event) {
-            event.preventDefault();
+            // event.preventDefault();
             const names = ["Tinder", "FilterFromText", "List"];
-            const store = useUserTextStoreV();
-            store.setCount(this.maxword);
+
+            this.textStoreV.setUnknown(this.lenword);
+            this.textStoreV.setCount(this.maxword);
+
             router.push({ name: names[this.choice] });
         }
     },
