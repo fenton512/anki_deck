@@ -1,0 +1,21 @@
+@startuml
+node "User Device" {
+    [Web Browser]
+}
+
+node "Server" {
+    [FastAPI Backend]
+    [NLP Module (spaCy)]
+    [File System]
+    database "SQLite DB" as DB
+}
+
+cloud "OpenAI Cloud" {
+    [GPT Service]
+}
+
+[Web Browser] --> [FastAPI Backend] : HTTP (REST API)
+[FastAPI Backend] --> [NLP Module (spaCy)] : Python calls
+[FastAPI Backend] --> DB : SQL
+[FastAPI Backend] --> [File System] : Read/Write CSV
+[FastAPI Backend] --> [GPT Service] : API

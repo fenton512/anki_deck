@@ -1,0 +1,17 @@
+@startuml
+package "Anki Deck Generator" {
+  [Frontend (Vue.js)] as Frontend
+  [FastAPI Backend] as Backend
+  [Database (SQLite)] as Database
+  [NLP Module (spaCy)] as NLP
+  [GPT Integration] as GPT
+  [File System] as FileSystem
+
+  Frontend -down-> Backend : HTTP (REST API)
+  Backend -down-> Database : SQL Queries
+  Backend -down-> NLP : Python Function Calls
+  Backend -down-> GPT : API Calls
+  Backend -down-> FileSystem : Read/Write CSV
+
+  Backend ..> Frontend : CSV File
+@enduml
