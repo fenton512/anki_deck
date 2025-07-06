@@ -39,7 +39,7 @@ export default {
                         class: "default"
                     }
                 }
-                let regex = /[a-zA-Z'`’-\d]+/;
+                let regex = /[a-zA-Z'`’-]+/;
                 let newWord = regex.exec(word);
                 if (newWord != null) {
                     return {

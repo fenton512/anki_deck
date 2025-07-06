@@ -3,6 +3,7 @@ import Basebutton from '@/components/Basebutton.vue';
 import { useAPIStore } from '@/stores/API';
 import { useUserTextStore } from '@/stores/userText';
 import { nextTick } from 'vue';
+import router from '@/router';
 
 export default {
     data() {    
@@ -18,6 +19,11 @@ export default {
             currentPage: 0,
             maxPage: 0,
             direction: null, // 0 - next page for translation, 1 - previous page for translation
+            resp: {
+                unknown_words: [],
+                known_words: [],
+                count: 0
+            },
         }
     },
     components: {
@@ -92,7 +98,22 @@ export default {
             } else if (event.key === "ArrowLeft") {
             this.moveBack();
             }
-        }
+        },
+        startGen() {
+            for (let word of this.wordList) {
+                switch (word.class) {
+                    case "wantLearn":
+                        this.resp.unknown_words.push(word.word);
+                        break;
+                    case "dontWantLearn":
+                        this.resp.known_words.push(word.word);
+                        break;
+                }
+            }
+            let API = useAPIStore();
+            API.setState(this.resp);
+            router.push({name: "FinalPage"});
+        },
     },
     mounted() {
         this.validateWords();
@@ -102,11 +123,7 @@ export default {
     },
     unmounted(){
         window.removeEventListener('resize', this.updateSizes);
-    },
-    watch: {
-        // currentPage(){
-        //     this.translate()
-        // }
+        window.removeEventListener('keydown', this.handleKeyDown);
     },
 }
 </script>
@@ -139,6 +156,9 @@ export default {
                     <Basebutton class="router-button" @click="moveBack"> Прокрутка назад</Basebutton>
                     <Basebutton class="router-button" @click="moveForward">Прокрутка вперед</Basebutton>
                 </div>
+            </div>
+            <div class="generation-container">
+                <Basebutton class="start-generation" @click="startGen"> Начать генерацию </Basebutton> 
             </div>
         </div>
     </div>
@@ -238,6 +258,15 @@ export default {
     .router-button{
         width: 240px;
         height: auto;
+    }
+    .start-generation{
+        width: 280px;
+        height: auto; 
+    }
+    .generation-container{
+        display: flex;
+        justify-content: center;
+        padding-top: 40px;
     }
 
 </style>
