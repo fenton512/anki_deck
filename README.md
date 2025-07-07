@@ -1,3 +1,12 @@
+## Usage
+How to launch our app.  
+*Be sure you have VPN turned on  
+Step 1. Install docker desktop on your computer  
+Link to the Docker Hub: "https://hub.docker.com/repository/docker/dkddjdjjfjdj/anki-deck/general"  
+Step 2. create .env file with OPENAI_API_KEY=TOKEN and replace TOKEN with your GPT token  
+Step 3. open terminal for folder with .env  
+Step 4. in terminal run command: "docker pull dkddjdjjfjdj/anki-deck"  
+Step 5. then in terminal run command: "docker run --env-file .env -p 8000:8000 dkddjdjjfjdj/anki-deck"  
 ## Development 
 ### Kanban board
 link to the Kanban board: https://github.com/orgs/AnkiGen/projects/2/views/1
