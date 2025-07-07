@@ -1,12 +1,16 @@
 ## Usage
 How to launch our app.  
-*Be sure you have VPN turned on  
-Step 1. Install docker desktop on your computer  
-Link to the Docker Hub: "https://hub.docker.com/repository/docker/dkddjdjjfjdj/anki-deck/general"  
-Step 2. create .env file with OPENAI_API_KEY=TOKEN and replace TOKEN with your GPT token  
-Step 3. open terminal for folder with .env  
-Step 4. in terminal run command: "docker pull dkddjdjjfjdj/anki-deck"  
-Step 5. then in terminal run command: "docker run --env-file .env -p 8000:8000 dkddjdjjfjdj/anki-deck"  
+```
+Step 1. Install docker desktop on your computer
+Step 2. open terminal from directory
+Step 3. create in the same directory .env with OPENAI_API_KEY=TOKEN and replace TOKEN with your GPT token
+Step 4. Log in docker using command "docker login" in terminal (you shall create account before and log in in docker desktop application)
+Step 5. in terminal run command: "docker pull dkddjdjjfjdj/anki-deck"
+Step 6. launch any vpn. It won't work without it because OpenAi restricted access to Russia 
+Step 7. then in terminal run command: "docker run --env-file .env -p 8000:8000 dkddjdjjfjdj/anki-deck"
+Step 8. in browser open application by going on this link: "localhost:8000/anki_deck/"
+Link to the Docker Hub: "https://hub.docker.com/repository/docker/dkddjdjjfjdj/anki-deck/general"
+``` 
 ## Development 
 ### Kanban board
 link to the Kanban board: https://github.com/orgs/AnkiGen/projects/2/views/1
@@ -25,20 +29,6 @@ link to the Kanban board: https://github.com/orgs/AnkiGen/projects/2/views/1
         - unittest
         - pytest
       CI workflows runs: https://github.com/AnkiGen/anki_deck/blob/backend/test_results.txt
-### How to launch using docker
-```
-Step 1. Install docker desktop on your computer
-Step 2. open terminal from directory
-Step 3. create in the same directory .env with OPENAI_API_KEY=TOKEN and replace TOKEN with your GPT token
-Step 4. Log in docker using command "docker login" in terminal (you shall create account before and log in in docker desktop application)
-Step 5. in terminal run command: "docker pull dkddjdjjfjdj/anki-deck"
-Step 6. launch any vpn. It won't work without it because OpenAi restricted access to Russia 
-Step 7. then in terminal run command: "docker run --env-file .env -p 8000:8000 dkddjdjjfjdj/anki-deck"
-Step 8. in browser open application by going on this link: "localhost:8000/anki_deck/"
-Link to the Docker Hub: "https://hub.docker.com/repository/docker/dkddjdjjfjdj/anki-deck/general"
-```
-
-
 ### Git workflow
 In our project we adapted base GitHub flow
 1. Creating issues: we use several templates for the issues (https://github.com/AnkiGen/anki_deck/tree/templates/.github/ISSUE_TEMPLATE). The most commonly used are User Story, Issue and Bug report
