@@ -1,6 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from api.fast_api import app
+from json import dumps
 
 client = TestClient(app)
 
@@ -20,7 +21,7 @@ def test_post_and_get_user():
     login = "testuser"
     password = "testpassword"
 
-    response = client.get(f"/user/post/{login}/{password}")
+    response = client.post(f"/user/post/{login}/{password}")
     assert response.status_code == 200
     assert response.json()['status'] == "ok"
 
@@ -45,7 +46,7 @@ def test_get_deck():
 def test_post_deck():
     user_id = 1
     cards = [1, 2, 3]
-    response = client.get("/deck/post", params={"user_id": user_id, "cards": cards})
+    response = client.post("/deck/post", params={"user_id": user_id, "cards": cards})
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 
@@ -63,7 +64,7 @@ def test_get_card():
 def test_post_card():
     word_id = 1
     sentences = ["sentence 1", "sentence 2"]
-    response = client.get("/card/post", params={"word_id": word_id, "sentences": ",".join(sentences)})
+    response = client.post("/card/post", params={"word_id": word_id, "sentences": sentences})
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 
@@ -90,7 +91,7 @@ def test_get_by_id():
 
 
 def test_post_word():
-    response = client.get(
+    response = client.post(
         "/word/post",
         params={
             "word": "testword",
@@ -106,13 +107,15 @@ def test_post_word():
 
 
 def test_wordlist_get_post():
-    response = client.get(
+    response = client.post(
         "/wordlist/post",
-        params={
-            "unknown_words": "word1,word2",
-            "dont_want_learn": "word3,word4"
+        json={
+            "unknown_words": ["word1", "word2"],
+            "known_words": ["word3", "word4"],
+            "count": 4
         }
     )
+
     assert response.status_code == 200
 
 
