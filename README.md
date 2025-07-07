@@ -16,6 +16,15 @@ link to the Kanban board: https://github.com/orgs/AnkiGen/projects/2/views/1
         - unittest
         - pytest
       CI workflows runs: https://github.com/AnkiGen/anki_deck/blob/backend/test_results.txt
+### How to launch using docker
+```
+Step 1. Install docker desktop on your computer
+Step 2. open terminal from directory
+Step 3. create .env with OPENAI_API_KEY=TOKEN and replace TOKEN with your GPT token 
+Step 4. in terminal run command: "docker pull dkddjdjjfjdj/anki-deck"
+Step 5. then in terminal run command: "docker run --env-file .env -p 8000:8000 dkddjdjjfjdj/anki-deck"
+Link to the Docker Hub: "https://hub.docker.com/repository/docker/dkddjdjjfjdj/anki-deck/general"
+```
 
 ### Git workflow
 In our project we adapted base GitHub flow
