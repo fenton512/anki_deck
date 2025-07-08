@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="31ea470c-a0c7-49f4-a6a1-c0dea29e598a" name="Changes" comment="more" />
+    <list default="true" id="31ea470c-a0c7-49f4-a6a1-c0dea29e598a" name="Changes" comment="more">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/gpt.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/gpt.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -221,7 +224,7 @@
       <workItem from="1750532537004" duration="459000" />
       <workItem from="1751905576672" duration="3814000" />
       <workItem from="1751910626902" duration="15856000" />
-      <workItem from="1751974952685" duration="2041000" />
+      <workItem from="1751974952685" duration="3469000" />
     </task>
     <task id="LOCAL-00002" summary="Tests uploading">
       <option name="closed" value="true" />

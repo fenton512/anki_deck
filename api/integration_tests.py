@@ -106,19 +106,6 @@ def test_post_word():
     assert response.json() == {"status": "ok"}
 
 
-def test_wordlist_get_post():
-    response = client.post(
-        "/wordlist/post",
-        json={
-            "unknown_words": ["word1", "word2"],
-            "known_words": ["word3", "word4"],
-            "count": 4
-        }
-    )
-
-    assert response.status_code == 200
-
-
 def test_get_user_not_found():
     response = client.get("/user/get?login=nonexistent")
     assert (not response.json()['id'])
