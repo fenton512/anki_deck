@@ -23,7 +23,7 @@ jobs:
       - name: Python installing
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'  # или другая версия, которая у вас используется
+          python-version: '3.12'
 
       - name: Dependencies
         run: |
@@ -33,21 +33,10 @@ jobs:
 
       - name: Unit tests run
         run: |
-          pytest --maxfail=1 --disable-warnings --tb=short --html=unit_tests_report.html --self-contained-html tests/unit_tests1.py
+          coverage run -m pytest tests/unit_tests1.py
+          coverage xml -o coverage.xml
 
       - name: Integration tests run
         run: |
-          pytest --maxfail=1 --disable-warnings --tb=short --html=integration_tests_report.html --self-contained-html api/integration_tests.py
-
-      - name: Report generation
-        run: |
-          mkdir -p reports
-          cp unit_tests_report.html reports/
-          cp integration_tests_report.html reports/
-          
-
-      - name: Reports archiving
-        uses: actions/upload-artifact@v4
-        with:
-          name: tests reports
-          path: reports/
+          coverage run -m pytest api/integration_tests.py
+          coverage xml -o coverage.xml
