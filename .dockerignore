@@ -1,0 +1,8 @@
+.env
+.idea
+.vscode
+.git
+.gitignore
+.gitignore
+__pycache__
+.github
