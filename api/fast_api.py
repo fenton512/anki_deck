@@ -149,7 +149,3 @@ async def post_text(payload: WordListRequest):
 async def options_wordlist_post(request: Request):
     return JSONResponse(status_code=200)
 
-
-# Mount static files (frontend build)
-# static_dir = os.path.join(os.path.dirname(__file__), "static")
-# app.mount("/anki_deck", StaticFiles(directory=static_dir, html=True), name="static")
