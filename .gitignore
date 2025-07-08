@@ -29,4 +29,5 @@ coverage
 api/__pycache__/
 *.pyc
 *.tsbuildinfo
+.env
 venv
