@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from typing import List
 from Appearance import is_word_in_generated_sentences,validate_response_sentences
 
+#fastapi  s s s s
 
 app = FastAPI()
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -19,7 +20,7 @@ cur = con.cursor()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "http://localhost:8000/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
