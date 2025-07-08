@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Query,Request
+# from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 from sqlite3 import connect
 from gpt import request_sentences, write_cards_to_csv, parse_response_to_dicts
@@ -8,7 +9,6 @@ from decryptors import *
 from pydantic import BaseModel
 from typing import List
 
-#fastapi  s s s s
 
 app = FastAPI()
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -19,8 +19,8 @@ cur = con.cursor()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:8000/"],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

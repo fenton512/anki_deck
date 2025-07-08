@@ -79,3 +79,4 @@ A user submits a text to generate an Anki deck. The frontend sends the text to t
 
 The system is deployed as follows:
 Frontend: Runs in the user's browser, served via a static web server. Backend: FastAPI application running selfhosted (Dockerized for portability). Database:file with data stored in the user`s memory. NLP/ML Models: Packaged with the backend, can be containerized for scalability. This setup allows easy deployment on the customer’s side. 
+
