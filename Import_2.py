@@ -1,5 +1,7 @@
 import spacy
 
+#fastapi s s 
+
 
 def lemmatization(json_data):
     nlp = spacy.load("en_core_web_sm")  # Load the English model

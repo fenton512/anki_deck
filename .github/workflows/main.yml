@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Repository checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Python downloading
         uses: actions/setup-python@v4
@@ -29,17 +29,20 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          python -m spacy download en_core_web_sm
 
       - name: Running unit tests
         run: |
-          pytest tests/unit_tests1.py --maxfail=1 --disable-warnings -q > test_results.txt 2>&1
+          coverage run -m unittest discover -s
+          coverage html
 
       - name: Running integration tests
         run: |
-          pytest tests/integration_tests.py --maxfail=1 --disable-warnings -q >> test_results.txt 2>&1
+          coverage run -m pytest api/integration_tests.py
+          coverage html
 
       - name: Save log as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-log
           path: test_results.txt

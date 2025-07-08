@@ -139,4 +139,3 @@ def test_get_by_word_not_found():
 def test_get_by_id_not_found():
     response = client.get("/word/get_by_id?word_id=99999")
     assert (not response.json()['word'])
-
