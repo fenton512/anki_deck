@@ -1,4 +1,6 @@
 import spacy
+from spacy.tokenizer import Tokenizer
+from spacy.util import compile_prefix_regex, compile_infix_regex, compile_suffix_regex
 import re
 
 #fastapi s s
@@ -12,6 +14,24 @@ def splitting(str_text):
     tokenized = []# List to store all tokens
     clickable = []# List to store tokens that are clickable
     export = {}# Dictionary to store unique tokens and their clickable status
+
+
+    infixes = nlp.Defaults.infixes
+
+    infixes = [pattern for pattern in infixes if '-' not in pattern]
+
+    prefix_re = compile_prefix_regex(nlp.Defaults.prefixes)
+    suffix_re = compile_suffix_regex(nlp.Defaults.suffixes)
+    infix_re = compile_infix_regex(infixes)
+
+    nlp.tokenizer = Tokenizer(
+        nlp.vocab,
+        rules=nlp.Defaults.tokenizer_exceptions,
+        prefix_search=prefix_re.search,
+        suffix_search=suffix_re.search,
+        infix_finditer=infix_re.finditer,
+        token_match=None
+    )
 
     doc = nlp(str_text)
 
@@ -29,7 +49,5 @@ def splitting(str_text):
             else:
                 export[token] = False
 
-    """so export is a dictionary where:
-    - keys are unique tokens from the text
-    - values are booleans indicating if the token is clickable (not punctuation, not a stopword, and matches the pattern)
-    The dictionary is built from the original text, ensuring that each token is processed only once."""
+    return export
+

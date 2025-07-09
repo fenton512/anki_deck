@@ -85,7 +85,6 @@ export default {
                 this.textStore.setText(this.userText);
                 router.push({name: "Filter"})
             }
-        
         },
         goBack() {
             router.push({name: "Welcom"})
