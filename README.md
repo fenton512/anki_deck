@@ -18,19 +18,10 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![Unlicense License][license-shield]][license-url]
-
-
-
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-    <img src="./images/danko.png" alt="Logo" width="80" height="80">
+    <img src="./images/danko.png" alt="Logo" width="250" height="100">
   <h3 align="center">DANIL DANKO'S<br> Anki Deck Generator</h3>
 
   <p align="center">
@@ -185,7 +176,7 @@ Don't forget to give the project a **star**!
 ### Top contributors:
 
 <a href="https://github.com/AnkiGen/anki_deck/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=othneildrew/Best-README-Template" alt="contrib.rocks image"/>
+  <img src=".images/sc1.png" alt="contrib image"/>
 </a>
 
 
