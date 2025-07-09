@@ -21,7 +21,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-    <img src="./images/danko.png" alt="Logo" width="250" height="250">
+    <img src="./images/danko.png" alt="Logo" width="350" height="350">
   <h3 align="center">DANIL DANKO'S<br> Anki Deck Generator</h3>
 
   <p align="center">
