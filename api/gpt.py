@@ -4,7 +4,6 @@ import spacy
 from fastapi.responses import PlainTextResponse
 from dotenv import load_dotenv
 import csv
-import os
 
 nlp = spacy.load("en_core_web_sm")
 

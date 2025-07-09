@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 from Import_2 import lemmatization
 from Import_1 import splitting
-from Appearance import is_word_in_generated_sentences
+from api.Appearance import is_word_in_generated_sentences
 
 
 class TestSplittingFunction(unittest.TestCase):
