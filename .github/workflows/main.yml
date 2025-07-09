@@ -28,7 +28,7 @@ jobs:
       - name: Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r api/requirements.txt
           python -m spacy download en_core_web_sm
 
       - name: Unit tests run
