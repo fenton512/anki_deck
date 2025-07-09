@@ -13,6 +13,9 @@ export default defineConfig({
     vueDevTools(),
     svgLoader(),
   ],
+    build: {
+    sourcemap: true
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
