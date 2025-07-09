@@ -13,11 +13,11 @@ import os
 nlp = spacy.load("en_core_web_sm")
 
 load_dotenv()
-openai_key = os.getenv("OPENAI_API_KEY")
+#openai_key = os.getenv("OPENAI_API_KEY")
 
 
 client = OpenAI(
-    api_key=openai_key
+    api_key=""
 )
 
 
