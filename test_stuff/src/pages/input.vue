@@ -33,7 +33,9 @@ export default {
             const resp = { // add
                 unknown_words: ["kill","survive","climb"],
                 known_words:["dog","cat","emansipation","Russia"],
-                count:6
+                count:6,
+                context: ["I will kill you all", "He will survive", "No daddy, I odnt want to climb on your penis"]
+
             };
             const response = await fetch("http://127.0.0.1:8000/wordlist/post", {
                 method: "POST",
