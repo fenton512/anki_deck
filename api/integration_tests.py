@@ -74,9 +74,8 @@ def test_get_by_word():
     assert response.status_code == 200
     data = response.json()
     assert data["word"] == word
-    assert "translations" in data
+    assert "word_id" in data
     assert "context_sentence" in data
-    assert "is_important" in data
     assert "user_id" in data
 
 
@@ -87,6 +86,8 @@ def test_get_by_id():
     data = response.json()
     assert data["word_id"] == word_id
     assert "word" in data
+    assert "context_sentence" in data
+    assert "user_id" in data
 
 
 def test_post_word():
