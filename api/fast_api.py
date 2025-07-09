@@ -165,7 +165,7 @@ async def post_word(word: str, context_sentence: str, user_id: int, mode: str):
     con = connect(data_file)
     cur = con.cursor()
     cur.execute("INSERT INTO words (word, context_sentence, user_id)"
-                " VALUES (?, ?, ?, ?, ?)", (word, context_sentence, user_id))
+                " VALUES (?, ?, ?)", (word, context_sentence, user_id))
     word_id = cur.execute("SELECT word_id FROM words").fetchall()[-1][0]
     if mode == "known":
         cur.execute("INSERT INTO known_words (word_id) VALUES (?)", (word_id,))
