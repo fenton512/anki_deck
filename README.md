@@ -21,7 +21,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-    <img src="./images/danko.png" alt="Logo" width="250" height="100">
+    <img src="./images/danko.png" alt="Logo" width="250" height="120">
   <h3 align="center">DANIL DANKO'S<br> Anki Deck Generator</h3>
 
   <p align="center">
@@ -176,7 +176,7 @@ Don't forget to give the project a **star**!
 ### Top contributors:
 
 <a href="https://github.com/AnkiGen/anki_deck/graphs/contributors">
-  <img src=".images/sc1.png" alt="contrib image"/>
+  <img src="[contributors-shield]" alt="contrib image"/>
 </a>
 
 
