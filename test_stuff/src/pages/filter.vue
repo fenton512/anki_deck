@@ -3,6 +3,7 @@ import BaseButton from '@/components/Basebutton.vue';
 import router from '@/router';
 import { useUserTextStoreV } from '@/stores/userTextV';
 
+
 export default {
     data() {
         return {
@@ -41,7 +42,6 @@ export default {
 
             this.textStoreV.setUnknown(this.lenword);
             this.textStoreV.setCount(this.maxword);
-
             router.push({ name: names[this.choice] });
         }
     },
@@ -230,6 +230,7 @@ export default {
         margin-left: 0.5em;
         width: auto;
     }
+    
     .header {
         font-family: "Roboto", sans-serif;
         font-optical-sizing: auto;

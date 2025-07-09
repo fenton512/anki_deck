@@ -18,19 +18,10 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![Unlicense License][license-shield]][license-url]
-
-
-
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-    <img src="./images/logo.png" alt="Logo" width="80" height="80">
+    <img src="./images/danko.png" alt="Logo" width="350" height="350">
   <h3 align="center">DANIL DANKO'S<br> Anki Deck Generator</h3>
 
   <p align="center">
@@ -127,11 +118,14 @@ You have the opportunity to choose the way of creating an Anki deck!
 1) Create deck using the most common and must-known words in English (Great for beginners!)
 2) Create deck using the text from your book or song.
 (Good for learners who know the basics and want to move further!)
+<img src = "./images/1.png" width = "1000" height = "1000"> <!--- Основная вкладка -->
 
 If you go with the **first choice**, the deck is automatically generated and you are welcome to download the deck in ```.csv``` or ```.apkg``` format
 
 If you choose the **second choice**, you need to submit the text in raw format.
+<img src = "./images/2.png" width = "1000" height = "1000"> <!--- Ввод текста -->
 Then proceed to *filters*, choose maximal count of words in text and the amount of unknown words in deck.
+<img src = "./images/7.png" width = "1000" height = "1000"> <!--- Фильтр -->
 Then you have these ways of choosing words into the deck:
 1) Tinder
 2) Manual
@@ -142,6 +136,7 @@ Very simple to use, mobile, but does not let you control every word in the propo
 - Swipe to the **left** to mark the word as don't want to learn (won't be added to deck)
 - Swipe to the **right** to make the word as want to learn (will be added to deck)
 - Click on the **top-right** to mark the word as already known.
+<img src = "./images/3.png" width = "1000" height = "1000"> <!--- Тиндер -->
 #### Manual 
 Somewhat complex, but yet, very powerful way of choosing words for the deck.
 You are presented with the whole text you've submitted.
@@ -154,16 +149,22 @@ Same as in manual:
 - By **one-time clicking** the card, you mark it green as want to learn
 - By **double clicking** the card, you mark it as read as don't want to learn
 - By **clicking thrice** you unmark the card
+<img src = "./images/4.png" width = "1000" height = "1000"> <!--- Список слов -->
 
 After finishing choosing words, you are presented to the preliminary view of your generated Anki deck card. You could manually change the word translation and context if needed. 
 Also, there is a possibility to **copy** the table in ```.csv``` format for manual change.
+<img src = "./images/5.png" width = "1000" height = "1000"> <!--- Предварительный просмотр карт -->
 When everything is done, you can proceed further for the download in ```.csv``` or ```.apkg``` formats!
+<img src = "./images/6.png" width = "1000" height = "1000"> <!--- Скачать колоду в формате ... -->
 <!-- ROADMAP -->
 ## Roadmap
 
 - [ ] Multi-language Support
     - [ ] German
  - [ ] Improved deck generation logic
+ - [ ] Make filter limitations work correctly
+ - [ ] Add possibility to fetch text by writing author and song name
+ - [ ] Remove automatically redundant symbols, s.a. [1], the, a, an, etc...
  
  See all our tasks [here](https://github.com/orgs/AnkiGen/projects/3)
 
@@ -185,7 +186,7 @@ Don't forget to give the project a **star**!
 ### Top contributors:
 
 <a href="https://github.com/AnkiGen/anki_deck/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=othneildrew/Best-README-Template" alt="contrib.rocks image"/>
+  <img src="./images/sc1.png" alt="contrib image"/>
 </a>
 
 
@@ -214,8 +215,8 @@ Viktor K. – telegram: @vitec_321
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
+[contributors-shield]: ./images/sc1.png
+[contributors-url]: https://github.com/AnkiGen/anki_deck/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
 [forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
 [stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
