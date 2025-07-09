@@ -176,7 +176,7 @@ Don't forget to give the project a **star**!
 ### Top contributors:
 
 <a href="https://github.com/AnkiGen/anki_deck/graphs/contributors">
-  <img src="[contributors-shield]" alt="contrib image"/>
+  <img "./images/sc1.png" alt="contrib image"/>
 </a>
 
 
