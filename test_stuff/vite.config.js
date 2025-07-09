@@ -7,7 +7,7 @@ import svgLoader from 'vite-svg-loader'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/anki_deck/',
+  base: '/',
   plugins: [
     vue(),
     vueDevTools(),

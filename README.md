@@ -1,3 +1,16 @@
+## Usage
+How to launch our app.  
+```
+Step 1. Install docker desktop on your computer
+Step 2. open terminal from directory
+Step 3. create in the same directory .env with OPENAI_API_KEY=TOKEN and replace TOKEN with your GPT token
+Step 4. Log in docker using command "docker login" in terminal (you shall create account before and log in in docker desktop application)
+Step 5. in terminal run command: "docker pull dkddjdjjfjdj/anki-deck"
+Step 6. launch any vpn. It won't work without it because OpenAi restricted access to Russia 
+Step 7. then in terminal run command: "docker run --env-file .env -p 8000:8000 dkddjdjjfjdj/anki-deck"
+Step 8. in browser open application by going on this link: "localhost:8000/anki_deck/"
+Link to the Docker Hub: "https://hub.docker.com/repository/docker/dkddjdjjfjdj/anki-deck/general"
+``` 
 ## Development 
 ### Kanban board
 link to the Kanban board: https://github.com/orgs/AnkiGen/projects/2/views/1
@@ -16,16 +29,6 @@ link to the Kanban board: https://github.com/orgs/AnkiGen/projects/2/views/1
         - unittest
         - pytest
       CI workflows runs: https://github.com/AnkiGen/anki_deck/blob/backend/test_results.txt
-### How to launch using docker
-```
-Step 1. Install docker desktop on your computer
-Step 2. open terminal from directory
-Step 3. create .env with OPENAI_API_KEY=TOKEN and replace TOKEN with your GPT token 
-Step 4. in terminal run command: "docker pull dkddjdjjfjdj/anki-deck"
-Step 5. then in terminal run command: "docker run --env-file .env -p 8000:8000 dkddjdjjfjdj/anki-deck"
-Link to the Docker Hub: "https://hub.docker.com/repository/docker/dkddjdjjfjdj/anki-deck/general"
-```
-
 ### Git workflow
 In our project we adapted base GitHub flow
 1. Creating issues: we use several templates for the issues (https://github.com/AnkiGen/anki_deck/tree/templates/.github/ISSUE_TEMPLATE). The most commonly used are User Story, Issue and Bug report
@@ -50,7 +53,7 @@ In our project we adapted base GitHub flow
 - rlosed automatically when PR is merged (via Closes #123)
 - reopen if bugs are found post-merge
 ### Git workflow using Gitgraph diagram
-https://www.mermaidchart.com/app/projects/87fa344a-ba3a-4698-a8cc-fff8011d213c/diagrams/9806633b-e6e0-429a-8bf9-b6178f25629b/share/invite/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N1bWVudElEIjoiOTgwNjYzM2ItZTZlMC00MjlhLThiZjktYjYxNzhmMjU2MjliIiwiYWNjZXNzIjoiVmlldyIsImlhdCI6MTc1MTgyNDIwMH0.wM7NipYQXLnSQ5szhIhBoJoWnuNj3Jegsmq-2Jji6bw
+![GitGraph diagram](./docs/GitGraph.png)
 ### Secrets management
 To protect sensitive data (API keys, passwords, tokens), we follow:
 1. Storage
@@ -61,3 +64,19 @@ To protect sensitive data (API keys, passwords, tokens), we follow:
 - Never Commit Secrets: Scan commits with git-secrets or truffleHog. Use placeholders (e.g., API_KEY=your_key_here in docs).
 - Rotation: Secrets are rotated quarterly or after team changes.
 - Access Control: Only maintainers and CI/CD systems have access.
+
+## Architecture
+### Static view
+![Component digram](./docs/architecture/static-view/static_view.png)  
+
+Our codebase is organized into clear modules: API, database, NLP processing, and frontend. The API layer interacts with the database and NLP modules via well-defined interfaces, minimizing coupling. Each module is responsible for a single concern, increasing cohesion. This modularity improves the maintainability of the product, as changes in one module (e.g., NLP logic) have minimal impact on others.
+### Dynamic view
+![Sequence diagram](./docs/architecture/dynamic-view/dyn_view.png)  
+
+A user submits a text to generate an Anki deck. The frontend sends the text to the FastAPI backend, which processes the text, interacts with the NLP module to extract words, queries the database for known/unknown words, and finally returns a downloadable deck. In our production environment, this scenario takes approximately 8 seconds to execute end-to-end
+### Deployment view
+![Deployment view digram](./docs/architecture/deployment-view/depl_view.png)  
+
+The system is deployed as follows:
+Frontend: Runs in the user's browser, served via a static web server. Backend: FastAPI application running selfhosted (Dockerized for portability). Database:file with data stored in the user`s memory. NLP/ML Models: Packaged with the backend, can be containerized for scalability. This setup allows easy deployment on the customer’s side. 
+
