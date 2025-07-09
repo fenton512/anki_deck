@@ -17,7 +17,7 @@ openai_key = os.getenv("OPENAI_API_KEY")
 
 
 client = OpenAI(
-    api_key="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"
+    api_key=openai_key
 )
 
 
