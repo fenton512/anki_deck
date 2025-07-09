@@ -30,7 +30,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-    <img src="./images/logo.png" alt="Logo" width="80" height="80">
+    <img src="./images/danko.png" alt="Logo" width="80" height="80">
   <h3 align="center">DANIL DANKO'S<br> Anki Deck Generator</h3>
 
   <p align="center">
@@ -214,8 +214,8 @@ Viktor K. – telegram: @vitec_321
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
+[contributors-shield]: ./images/sc1.png
+[contributors-url]: https://github.com/AnkiGen/anki_deck/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
 [forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
 [stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
