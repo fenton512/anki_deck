@@ -189,6 +189,8 @@ class TestAppearance(unittest.TestCase):
     def test_multiple_sentences_some_match(self):
         word = "read"
         sentences = ["They will run.", "She reads a book.", "Walking is healthy."]
+        self.assertFalse(is_word_in_generated_sentences(word, sentences))
+        sentences = ["He read every morning.", "She reads a book.", "Walking as read."]
         self.assertTrue(is_word_in_generated_sentences(word, sentences))
 
     def test_empty_sentences(self):
