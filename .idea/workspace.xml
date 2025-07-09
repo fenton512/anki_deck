@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="31ea470c-a0c7-49f4-a6a1-c0dea29e598a" name="Changes" comment="more more">
-      <change beforePath="$PROJECT_DIR$/api/anki_deck.db" beforeDir="false" afterPath="$PROJECT_DIR$/api/anki_deck.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
