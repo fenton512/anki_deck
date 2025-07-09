@@ -33,7 +33,7 @@ jobs:
 
       - name: Unit tests run
         run: |
-          coverage run -m pytest tests/unit_tests1.py
+          coverage run -m pytest api/unit_tests1.py
           coverage xml -o coverage.xml
 
       - name: Integration tests run
