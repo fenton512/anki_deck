@@ -106,7 +106,6 @@ export default {
             </span>
         </div>
         <div class="button-container">
-
             <Basebutton class="start-generation" @click="startGeneration()">Начать генерацию</Basebutton>
         </div>
     </div>
