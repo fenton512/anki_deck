@@ -225,7 +225,7 @@
       <workItem from="1751905576672" duration="3814000" />
       <workItem from="1751910626902" duration="15856000" />
       <workItem from="1751974952685" duration="8832000" />
-      <workItem from="1752048477177" duration="1747000" />
+      <workItem from="1752048477177" duration="2457000" />
     </task>
     <task id="LOCAL-00002" summary="Tests uploading">
       <option name="closed" value="true" />
@@ -270,7 +270,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="tests2" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -290,6 +302,10 @@
           <url>file://$PROJECT_DIR$/tests/unit_tests1.py</url>
           <line>165</line>
           <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/api/gpt.py</url>
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
