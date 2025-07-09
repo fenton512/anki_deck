@@ -20,7 +20,6 @@ client = OpenAI(
 def generate_prompt(unknown_words,known_words,count):
     return f"""
 You are a language tutor helping create flashcards for learning English.
-
 Task:
 For each word in the list of unknown words, create
  **translation of this word, three natural English sentences and translation of each of them into Russian** that:

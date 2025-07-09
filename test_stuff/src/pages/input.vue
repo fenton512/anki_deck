@@ -35,7 +35,7 @@ export default {
                 known_words:["dog","cat","emansipation","Russia"],
                 count:6
             };
-            const response = await fetch("https://anki.dbpg.ru/wordlist/get", {
+            const response = await fetch("http://127.0.0.1:8000/wordlist/post", {
                 method: "POST",
                 headers: {
                     'Content-Type' : 'application/json'
