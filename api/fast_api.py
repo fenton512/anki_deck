@@ -123,24 +123,16 @@ async def get_by_word(word: str):
     ans = {
         'word_id': cur.execute("SELECT word_id FROM words WHERE word = ?", (word,)).fetchone(),
         'word': word,
-        'translations': cur.execute("SELECT translations FROM words WHERE word = ?",
-                                    (word,)).fetchone(),
         'context_sentence': cur.execute("SELECT context_sentence FROM words WHERE word = ?",
                                         (word,)).fetchone(),
-        'is_important': cur.execute("SELECT is_important FROM words WHERE word = ?",
-                                    (word,)).fetchone(),
         'user_id': cur.execute("SELECT user_id FROM words WHERE word = ?",
                                (word,)).fetchone()
     }
     con.close()
     if ans['word_id']:
         ans['word_id'] = ans['word_id'][0]
-    if ans['translations']:
-        ans['translations'] = ans['translations'][0]
     if ans['context_sentence']:
         ans['context_sentence'] = ans['context_sentence'][0]
-    if ans['is_important']:
-        ans['is_important'] = ans['is_important'][0]
     if ans['user_id']:
         ans['user_id'] = ans['user_id'][0]
     return ans
@@ -153,24 +145,16 @@ async def get_by_id(word_id: int):
     ans = {
         'word_id': word_id,
         'word': cur.execute("SELECT word FROM words WHERE word_id = ?", (word_id,)).fetchone(),
-        'translations': cur.execute("SELECT translations FROM words WHERE word_id = ?",
-                                    (word_id,)).fetchone(),
         'context_sentence': cur.execute("SELECT context_sentence FROM words WHERE word_id = ?",
                                         (word_id,)).fetchone(),
-        'is_important': cur.execute("SELECT is_important FROM words WHERE word_id = ?",
-                                    (word_id,)).fetchone(),
         'user_id': cur.execute("SELECT user_id FROM words WHERE word_id = ?",
                                (word_id,)).fetchone()
     }
     con.close()
     if ans['word']:
         ans['word'] = ans['word'][0]
-    if ans['translations']:
-        ans['translations'] = ans['translations'][0]
     if ans['context_sentence']:
         ans['context_sentence'] = ans['context_sentence'][0]
-    if ans['is_important']:
-        ans['is_important'] = bool(ans['is_important'][0])
     if ans['user_id']:
         ans['user_id'] = ans['user_id'][0]
     return ans
@@ -195,11 +179,17 @@ async def post_word(word: str, translations: str, context_sentence: str, is_impo
 
 
 @app.get("/wordlist/get")
-async def get_wordlist(count: int,
-                       wantLearn: list[str] = Query(),
-                       dontWantLearn: list[str] = Query()):
-    response_text = request_sentences(wantLearn, dontWantLearn)
-    return write_cards_to_csv(response_text)
+async def get_wordlist():
+    con = connect(data_file)
+    cur = con.cursor()
+    ids = cur.execute("SELECT word_id FROM known_words").fetchall()
+    words = []
+    for word_id in ids:
+        word = cur.execute("SELECT word FROM words WHERE word_id = ?", (word_id[0],)).fetchall()
+        if word:
+            words.append(word[0])
+    con.close()
+    return {"words": words}
 
 
 class WordListRequest(BaseModel):
