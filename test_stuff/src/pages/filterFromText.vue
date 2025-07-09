@@ -32,14 +32,31 @@ export default {
     methods: {
         validateWords() {
             let wordsArr = this.text.trim().split(/(\s+)/);
+            console.log(this.text.split(/[\.!?]+/)
+                .filter((sentance) => sentance.length > 0)
+                .map((sentance) => {
+                    return sentance.trim();
+                }
+                ));
+            let sentenceIndex = 0;
+            let prevWord = "";
             this.words = wordsArr.map((word) => {
+                let currentIndex = sentenceIndex;
+                let endOfSentance = /[!?\.]+/.exec(word);
+                if (endOfSentance != null) {
+                    sentenceIndex++
+                }
                 if (word == '\n') {
+                    if (/[!?\.]+/.exec(prevWord) == null)
+                        sentenceIndex++;
                     return {
                         word: '',
                         extrChars:['', '\n'],
                         class: "default"
                     }
                 }
+                prevWord = word;
+
                 let regex = /[a-zA-Z'`’-]+/;
                 let newWord = regex.exec(word);
                 if (newWord != null) {
@@ -48,7 +65,8 @@ export default {
                     extrChars: newWord.index == 0 ? 
                         ['', `${word.substring(newWord[0].length)} `] : 
                         [word.substring(0, newWord.index), `${word.substring(newWord.index + newWord[0].length)} `],
-                    class: "default"
+                    class: "default",
+                    sentanceIndex: currentIndex
                     }
                 } else {
                     return {

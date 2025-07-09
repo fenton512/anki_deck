@@ -17,7 +17,7 @@ export default {
         }
     },
     mounted() {
-        this.fatchdata();
+        // this.fatchdata();
         //this variable represents store, you can use all its actions as methods
         this.textStoreV = useUserTextStoreV();
         this.textStore = useUserTextStore();
