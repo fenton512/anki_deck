@@ -1,3 +1,4 @@
+import openai
 from fastapi import FastAPI, Query,Request
 from fastapi.responses import JSONResponse
 from sqlite3 import connect
@@ -6,8 +7,7 @@ import os
 from fastapi.middleware.cors import CORSMiddleware
 from decryptors import *
 from pydantic import BaseModel
-from typing import List
-import uvicorn
+from time import sleep
 
 app = FastAPI()
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -15,8 +15,8 @@ data_file = os.path.join(basedir, 'anki_deck.db')
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:8000/"],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -203,14 +203,14 @@ async def post_text(payload: WordListRequest):
     unknown_words = payload.unknown_words
     known_words = payload.known_words
     count = payload.count
-    response_text = request_sentences(unknown_words, known_words, count)
-    return write_cards_to_csv(response_text)
+    while True:
+        try:
+            response_text = request_sentences(unknown_words, known_words, count)
+            return write_cards_to_csv(response_text)
+        except openai.APIStatusError as e:
+            sleep(60)
 
 
 @app.options("/wordlist/post")
 async def options_wordlist_post(request: Request):
     return JSONResponse(status_code=200)
-
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
