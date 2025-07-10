@@ -32,11 +32,15 @@ jobs:
           python -m spacy download en_core_web_sm
 
       - name: Unit tests run
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           coverage run -m pytest api/unit_tests1.py
           coverage xml -o coverage.xml
 
       - name: Integration tests run
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           coverage run -m pytest api/integration_tests.py
           coverage xml -o coverage.xml
