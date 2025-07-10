@@ -5,6 +5,7 @@ import { useUserTextStore } from '@/stores/userText';
 import { useUserTextStoreV } from '@/stores/userTextV';
 import { nextTick } from 'vue';
 import router from '@/router';
+import {shuffle} from '@/scripts/shuffle'
 
 export default {
     data() {    
@@ -78,6 +79,10 @@ export default {
         },
         validateWords() {
             this.wordList = useUserTextStoreV().words;
+            this.wordList = shuffle(this.wordList);
+            // this.wordList.forEach(element => {
+            //     console.log(element)
+            // });
             let sentenceIndex = 0;
             // this.wordList = wordArr.map((word) => {
             //     let currentIndex = sentenceIndex;
@@ -152,7 +157,7 @@ export default {
                         v-for="word, index in wordList" 
                         :key="index" 
                         :class="['card', word.class]">
-                        {{word.word}}
+                        {{word.word.toLowerCase()}}
                     </div>
                 </div>
             </div>

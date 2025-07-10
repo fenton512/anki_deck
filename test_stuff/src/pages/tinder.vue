@@ -1,6 +1,7 @@
 <script> 
 import BaseButton from '@/components/Basebutton.vue';
 import router from '@/router';
+import {shuffle} from '@/scripts/shuffle'
 
 import { useUserTextStoreV } from '@/stores/userTextV';
 
@@ -12,6 +13,13 @@ export default {
             words: [],
             currentIndex: 0,
             currentWord: '',
+            resp: {
+                unknown_words: [],
+                known_words: [],
+                count: 0,
+                context_sentences: []
+            },
+            skips: 0
         }
     },
     computed: {
@@ -28,6 +36,7 @@ export default {
     methods: {
         initializeGame() {
             this.words = this.store.words;
+            shuffle(this.words);
             this.countleft = this.words.length;
             this.countadded = 0;
             this.currentIndex = 0;
@@ -35,27 +44,28 @@ export default {
         },
         updateCurrentWord() {
             if (this.currentIndex < this.words.length) {
-                this.currentWord = this.words[this.currentIndex];
+                this.currentWord = this.words[this.currentIndex].word;
             } else {
                 this.currentWord = '';
             }
         },
         likeWord() {
             if (this.currentIndex < this.words.length) {
-                this.store.yesLearn.push(this.currentWord);
+                this.resp.unknown_words.push(this.currentWord);
                 this.countadded++;
                 this.nextWord();
             }
         },
         dislikeWord() {
             if (this.currentIndex < this.words.length) {
-                this.store.noLearn.push(this.currentWord);
+                this.resp.known_words.push(this.currentWord);
                 this.nextWord();
             }
         },
         starWord() {
             if (this.currentIndex < this.words.length) {
-                this.store.known.push(this.currentWord);
+                // this.store.known.push(this.currentWord);
+                this.skips++;
                 this.nextWord();
             }
         },
@@ -72,12 +82,12 @@ export default {
                 this.currentIndex--;
                 this.countleft = this.words.length - this.currentIndex;
                 // Remove from the correct list if going back
-                const prevWord = this.words[this.currentIndex];
-                if (this.store.yesLearn.length > 0 && this.store.yesLearn[this.store.yesLearn.length - 1] === prevWord) {
-                    this.store.yesLearn.pop();
+                const prevWord = this.words[this.currentIndex].word;
+                if (this.resp.unknown_words.length > 0 && this.resp.unknown_words[this.resp.unknown_words.length - 1] === prevWord) {
+                    this.resp.unknown_words.pop();
                     this.countadded--;
-                } else if (this.store.noLearn.length > 0 && this.store.noLearn[this.store.noLearn.length - 1] === prevWord) {
-                    this.store.noLearn.pop();
+                } else if (this.resp.known_words.length > 0 && this.resp.known_words[this.resp.known_words.length - 1] === prevWord) {
+                    this.resp.known_words.pop();
                 } else if (this.store.known.length > 0 && this.store.known[this.store.known.length - 1] === prevWord) {
                     this.store.known.pop();
                 }
@@ -89,11 +99,11 @@ export default {
         finishGame() {
             // Save lists to store explicitly (in case of reactivity issues)
             this.store.setYes(this.store.yesLearn);
-            this.store.setNo(this.store.noLearn);
+            this.store.setNo(this.resp.known_words);
             this.store.setKnown(this.store.known);
         },
         redirect() {
-            router.push({name: 'Review'});
+            router.push({name: 'FinalPage'});
         },
         goFilter() {
             router.push({name: "Filter"})
@@ -116,7 +126,7 @@ export default {
             </div>
             <div class = "card" v-if="currentWord">
                 <button class="star-btn" @click="starWord"><img class="corner-img" src="/star.png" alt="star"></button>
-                <div class="word">{{ currentWord }}</div>
+                <div class="word">{{ currentWord.toLowerCase() }}</div>
                 <div class = "button-container">
                     <button class = "like left" @click="dislikeWord"><img src="/dislike.png" alt="dislike"></button>
                     <button class = "like right" @click="likeWord"><img src="/like.png" alt="like"></button>
@@ -124,13 +134,12 @@ export default {
             </div>
             <div class="game-finished" v-else>
                 <h2>Все слова обработаны!</h2>
-                <p>Слов добавлено в деку: {{ store.yesLearn.length }}</p>
-                <p>Слов пропущено: {{ store.noLearn.length }}</p>
-                <p>Известных слов: {{ store.known.length }}</p>
+                <p>Слов добавлено в деку: {{ resp.unknown_words.length }}</p>
+                <p>Слов пропущено: {{ skips }}</p>
             </div>
             <div v-if ="currentWord">
               <h2>Слов осталось: {{ countleft }}</h2>
-            <h2>Слов добавлено в деку: {{ store.yesLearn.length }}</h2>  
+            <h2>Слов добавлено в деку: {{ countadded }}</h2>  
             </div>
             <div v-else>
                 <BaseButton class = "submit" @click="redirect">Начать генерацию</BaseButton>
