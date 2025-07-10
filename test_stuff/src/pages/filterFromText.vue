@@ -15,14 +15,22 @@ export default {
             resp: {
                 unknown_words: [],
                 known_words: [],
-                count: 0
+                count: 0,
+                context: []
             },
+            sentences: []
         }
     },
     mounted() {
         this.textStore = useUserTextStore();
         //after rendering get data from store
         this.text = this.textStore.text;
+        this.sentences = this.text.split(/[\.!?\n]+/)
+                                    .filter((sentance) => sentance.length > 0)
+                                    .map((sentance) => {
+                                    return sentance.trim();
+                                    });
+        console.log(this.resp.context);
         this.textArea = document.getElementsByClassName("textarea")[0];
         this.validateWords();
     },
@@ -66,7 +74,7 @@ export default {
                         ['', `${word.substring(newWord[0].length)} `] : 
                         [word.substring(0, newWord.index), `${word.substring(newWord.index + newWord[0].length)} `],
                     class: "default",
-                    sentanceIndex: currentIndex
+                    sentenceIndex: currentIndex
                     }
                 } else {
                     return {
@@ -89,10 +97,12 @@ export default {
                 switch (word.class) {
                     case "wantLearn":
                         this.resp.unknown_words.push(word.word);
+                        this.resp.context.push(this.sentences[word.sentenceIndex]);
                         break;
                     case "neverLearn":
+                        this.resp.context.push(this.sentences[word.sentenceIndex]);
                         this.resp.known_words.push(word.word);
-                        break;
+                    break;
                 }
             }
             let API = useAPIStore();

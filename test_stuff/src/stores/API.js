@@ -5,7 +5,8 @@ export const useAPIStore = defineStore("API", {
         data: {
             unknown_words: [],
             known_words: [],
-            count: 10
+            count: 10,
+            context: []
         }
     }),
     actions: {
