@@ -13,9 +13,7 @@ load_dotenv()
 openai_key = os.getenv("OPENAI_API_KEY")
 
 
-client = OpenAI(
-    api_key=openai_key,
-)
+client = OpenAI(api_key=openai_key)
 
 
 def generate_prompt(unknown_words,known_words,count):
