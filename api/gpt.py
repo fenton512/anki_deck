@@ -1,18 +1,20 @@
-from openai import OpenAI
+from openai import OpenAI, Timeout
 import io
 import spacy
 from fastapi.responses import PlainTextResponse
 from dotenv import load_dotenv
 import csv
+import os
+from time import sleep
 
 nlp = spacy.load("en_core_web_sm")
 
 load_dotenv()
-#openai_key = os.getenv("OPENAI_API_KEY")
+openai_key = os.getenv("OPENAI_API_KEY")
 
 
 client = OpenAI(
-    api_key=""
+    api_key=openai_key,
 )
 
 
@@ -41,17 +43,19 @@ word;word_translation;sentence1;sentence1_translation;sentence2;sentence2_transl
 
 
 def request_sentences(unknown_words,known_words,count):#add arguements
-    prompt = generate_prompt(unknown_words,known_words,count)# add arguements
+    while True:
+        try:
+            prompt = generate_prompt(unknown_words,known_words,count)# add arguements
 
-    completion = client.chat.completions.create(
-        model="gpt-4o-mini",  # Или "gpt-4o-mini", если хочешь
-        messages=[
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.7
-    )
+            completion = client.chat.completions.create(
+                model="gpt-4o-mini",  # Или "gpt-4o-mini", если хочешь
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.7
+            )
+            return completion.choices[0].message.content
+        except Timeout:
+             sleep(5)
 
-    return completion.choices[0].message.content
 
 def parse_response_to_dicts(response_text):
     rows = []
