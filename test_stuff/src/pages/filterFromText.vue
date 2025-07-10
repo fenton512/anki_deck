@@ -25,12 +25,12 @@ export default {
         this.textStore = useUserTextStore();
         //after rendering get data from store
         this.text = this.textStore.text;
+        console.log(this.text);
         this.sentences = this.text.split(/[\.!?\n]+/)
                                     .filter((sentance) => sentance.length > 0)
                                     .map((sentance) => {
                                     return sentance.trim();
                                     });
-        console.log(this.resp.context);
         this.textArea = document.getElementsByClassName("textarea")[0];
         this.validateWords();
     },
@@ -40,12 +40,6 @@ export default {
     methods: {
         validateWords() {
             let wordsArr = this.text.trim().split(/(\s+)/);
-            console.log(this.text.split(/[\.!?]+/)
-                .filter((sentance) => sentance.length > 0)
-                .map((sentance) => {
-                    return sentance.trim();
-                }
-                ));
             let sentenceIndex = 0;
             let prevWord = "";
             this.words = wordsArr.map((word) => {
