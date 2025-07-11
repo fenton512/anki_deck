@@ -25,6 +25,7 @@ For each word in the list of unknown words, create
 - Clearly shows the meaning of the unknown word through context(context is defined by context_sentence list where index of context sentence is the same as index of word from uknown words.
 - Sentences must sound natural and be understandable to a learner.
 - Do NOT define the word; use it in context.
+- Consider the meaning of the word attaching it`s translation to the word_translation.
 - Try to use less words from the known words list in the sentences.
 - Length of each sentence should be exactly {count} words.
 - Each word, his translation and sentences with their translations should be on a new line,
