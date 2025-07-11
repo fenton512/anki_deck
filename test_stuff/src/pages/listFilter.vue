@@ -1,7 +1,7 @@
 <script>
 import Basebutton from '@/components/Basebutton.vue';
 import { useAPIStore } from '@/stores/API';
-import { useUserTextStore } from '@/stores/userText';
+import { useUserTextStoreV } from '@/stores/userTextV';
 import { nextTick } from 'vue';
 import router from '@/router';
 
@@ -75,7 +75,7 @@ export default {
             word.class = nextClass;
         },
         validateWords() {
-            let wordArr = useUserTextStore().text.split(/\s/);
+            let wordArr = useUserTextStoreV().words;
             this.wordList = wordArr.map((word) => {
                 let regex = /[a-zA-Z'`’-]+/;
                 let newWord = regex.exec(word);
@@ -114,6 +114,9 @@ export default {
             API.setState(this.resp);
             router.push({name: "FinalPage"});
         },
+        goBack() {
+            router.push({ name: "Filter" });
+        }
     },
     mounted() {
         this.validateWords();
@@ -129,14 +132,21 @@ export default {
 </script>
 
 <template>
+    <header>
+        <h2 @click="goBack"><-- Вернуться к фильтрам</h2>
+    </header>
     <div class="main-container">
-        <h1>Выбор слов из текста
-            <span class="question-mark" @mouseover="isVisible=true" @mouseout="isVisible=false">?
-                <span v-if="isVisible" class="user-hint">Кликни по карточке со словом, чтобы задать ей статус:<br><span style="background-color: #71c686;">Зеленые карточки:</span>
-                неизвестные слова, которые ты хочешь учить<br>
-                <span style="background-color: #B74747;">Красные карточки:</span> слова, которые ты не хочешь учить</span>
-            </span>
-        </h1>
+        <div class="heading-row">
+            <div class="heading-group">
+                <div class="heading-text">Выбор слов из текста</div>
+                <span class="question-mark" @mouseover="isVisible=true" @mouseleave="isVisible=false">?
+                    <span v-if="isVisible" class="user-hint">Кликни по карточке со словом, чтобы задать ей статус:<br>
+                        <span style="background-color: #71c686;">Зеленые карточки</span> – неизвестные слова<br>
+                        <span style="background-color: #B74747;">Красные карточки</span> – слова, которые ты не хочешь учить
+                    </span>
+                </span>
+            </div>
+        </div>
         <div class="nested-container">
             <span class="card-number">Слова {{cardNumStart}}-{{cardNumStart+4}} из {{cardNumTotal}}</span>
             <div class="card-container">
@@ -150,12 +160,13 @@ export default {
                     </div>
                 </div>
             </div>
+            <hr>
             <div class="bottom-contaiter">
-                <span class="card-picked">Выбрано слов {{counter}} из {{cardNumTotal}}</span>
-                <div class="router-buttons-container">
-                    <Basebutton class="router-button" @click="moveBack"> Прокрутка назад</Basebutton>
-                    <Basebutton class="router-button" @click="moveForward">Прокрутка вперед</Basebutton>
+                <div class="arrow-icons">
+                    <img src="/left.png" alt="Left" class="arrow-icon" @click="moveBack" /> 
+                     <img src="/right.png" alt="Right" class="arrow-icon" @click="moveForward" /> 
                 </div>
+                <span class="card-picked">Выбрано слов {{counter}} из {{cardNumTotal}}</span>
             </div>
             <div class="generation-container">
                 <Basebutton class="start-generation" @click="startGen"> Начать генерацию </Basebutton> 
@@ -165,44 +176,85 @@ export default {
 </template>
 
 <style scoped>
+header {
+        font-family: "Inter", sans-serif;
+    }
     .main-container{
         display: flex;
         flex-direction: column;
         align-items: center;
         height: 100%;
+        margin: 0 px;
+        font-family: "Roboto", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 300;
+        font-style: normal;
+        color: white;
     }
-    h1{
-        flex: 0 0 auto;
-        font-size: 30px;
+    header h2 {
+        font-size: 15px;
+        font-weight: 100;
+    }
+    header h2:hover {
+        cursor: pointer;
+        text-decoration: underline;
+        text-decoration-color: #fff;
+        text-underline-offset: 4px;
+    }
+    .heading-row {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .heading-group {
         position: relative;
-        font-weight: 400;
-        font-size: 40px;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
     }
-    .question-mark{
-        border: #888 solid;
-        border-radius: 24px;
-        display: inline-block;
+    .heading-text {
+        font-family: "Roboto", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        font-variation-settings: "wdth" 100;
+        text-align: center;
+        font-size: 32px;
+        margin: 0;
+        position: relative;
+    }
+    .question-mark {
+        border: 1px solid #888;
+        border-radius: 50%;
         width: 28px;
         height: 28px;
-        text-align: center;
-        position: absolute;
-        top: 5px;
-        right: -42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 22px;
+        cursor: pointer;
+        flex-shrink: 0;
     }
-    .user-hint{
-        content: attr(data-text);
-        min-width: 420px;
-        z-index: 1;
-        background-color: var(--color-background);
+    hr {
+        border: 1px solid white;
+        width: 100%;
+        margin: 20px 0 20px 0;
+    }
+    .user-hint {
         position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        min-width: 400px;
+        z-index: 10;
+        background-color: var(--color-background);
         border-radius: 10px;
-        border: white solid;
-        border-width: 1px;
-        top: 35px;
+        border: 1px solid white;
+        padding: 10px;
         font-size: 18px;
-        font-weight: 400;
-        left: 30px;
+        margin-top: 0;
+        margin-left:350px;
     }
     .nested-container{
         display: flex;
@@ -220,6 +272,7 @@ export default {
     }
     .card-number{
         font-size: 20px;
+        margin-bottom:10px;
     }
     .card{
         height: 260px;
@@ -227,8 +280,16 @@ export default {
         box-sizing: border-box;
         border-radius: 28px;
         border: 2px solid #fff;
-        font-size: 40px;
+        font-size: 30px;
         flex-shrink: 0;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 80px;
+        min-width: 120px;
+        font-size: 35px;
+        text-align: center;
     }
     .scroller{
         display: flex;
@@ -260,13 +321,35 @@ export default {
         height: auto;
     }
     .start-generation{
-        width: 280px;
-        height: auto; 
+        width: 255px;
+        height: 60px;
+        border-radius: 0%;
     }
     .generation-container{
         display: flex;
         justify-content: center;
         padding-top: 40px;
     }
-
+    .bottom-contaiter {
+        position: relative;
+        min-height: 60px;
+    }
+    .arrow-icons {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        gap: 8px;
+        z-index: 2;
+    }
+    .arrow-icon {
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        filter: brightness(0.85 ) grayscale(0.2);
+        transition: filter 0.15s;
+    }
+    .arrow-icon:hover {
+        filter: brightness(1) grayscale(0);                                                                             
+    }
 </style>
