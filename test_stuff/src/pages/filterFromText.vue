@@ -16,7 +16,7 @@ export default {
                 unknown_words: [],
                 known_words: [],
                 count: 0,
-                context: []
+                context_sentences: []
             },
             sentences: []
         }
@@ -91,10 +91,10 @@ export default {
                 switch (word.class) {
                     case "wantLearn":
                         this.resp.unknown_words.push(word.word);
-                        this.resp.context.push(this.sentences[word.sentenceIndex]);
+                        this.resp.context_sentences.push(this.sentences[word.sentenceIndex]);
                         break;
                     case "neverLearn":
-                        this.resp.context.push(this.sentences[word.sentenceIndex]);
+
                         this.resp.known_words.push(word.word);
                     break;
                 }

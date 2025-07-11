@@ -136,14 +136,14 @@ class WordListRequest(BaseModel):
     unknown_words: List[str]
     known_words:List[str]
     count: int
-    context: List[str]  
+    context_sentences: List[str]  
 
 @app.post("/wordlist/post")
 async def post_text(payload: WordListRequest):
     unknown_words = payload.unknown_words
     known_words = payload.known_words
     count = payload.count
-    context_sentences = payload.context
+    context_sentences = payload.context_sentences
     words_to_generate = unknown_words.copy()
     correct_rows = []
     while words_to_generate:
