@@ -2,7 +2,7 @@
 import BaseButton from '@/components/Basebutton.vue';
 import router from '@/router';
 
-import { useUserTextStore } from '@/stores/userText';
+import { useUserTextStoreV } from '@/stores/userTextV';
 
 
 export default {
@@ -15,52 +15,20 @@ export default {
             store: null,
             validatedText: '',
             textStore: null,
-            // Sample data. Fetch from API the csv file and format it like this
-            words: [
-                [0, "made", "сделать", "she made a cake", "она сделала торт", "she made a cake"],
-                [1, "run", "бегать", "he can run fast", "он может быстро бегать", "he can run fast"],
-                [2, "see", "видеть", "I see the stars", "Я вижу звезды", "I see the stars"],
-                [3, "eat", "есть", "They eat apples", "Они едят яблоки", "They eat apples"],
-                [4, "read", "читать", "I read books", "Я читаю книги", "I read books"],
-                [5, "write", "писать", "He writes letters", "Он пишет письма", "He writes letters"],
-                [6, "go", "идти", "We go to school", "Мы идём в школу", "We go to school"],
-                [7, "come", "приходить", "She comes home", "Она приходит домой", "She comes home"],
-                [8, "drink", "пить", "I drink water", "Я пью воду", "I drink water"],
-                [9, "sleep", "спать", "They sleep well", "Они хорошо спят", "They sleep well"],
-                [10, "walk", "гулять", "We walk in the park", "Мы гуляем в парке", "We walk in the park"],
-                [11, "talk", "разговаривать", "He talks a lot", "Он много разговаривает", "He talks a lot"],
-                [12, "listen", "слушать", "She listens to music", "Она слушает музыку", "She listens to music"],
-                [13, "watch", "смотреть", "I watch TV", "Я смотрю телевизор", "I watch TV"],
-                [14, "play", "играть", "They play football", "Они играют в футбол", "They play football"],
-                [15, "study", "учиться", "We study English", "Мы учим английский", "We study English"],
-                [16, "buy", "покупать", "He buys bread", "Он покупает хлеб", "He buys bread"],
-                [17, "sell", "продавать", "She sells flowers", "Она продаёт цветы", "She sells flowers"],
-                [18, "open", "открывать", "I open the door", "Я открываю дверь", "I open the door"],
-                [19, "close", "закрывать", "They close the window", "Они закрывают окно", "They close the window"],
-                [20, "draw", "рисовать", "We draw pictures", "Мы рисуем картинки", "We draw pictures"],
-                [21, "cook", "готовить", "She cooks dinner", "Она готовит ужин", "She cooks dinner"],
-                [22, "drive", "водить", "He drives a car", "Он водит машину", "He drives a car"],
-                [23, "ride", "ездить", "I ride a bike", "Я катаюсь на велосипеде", "I ride a bike"],
-                [24, "swim", "плавать", "They swim in the pool", "Они плавают в бассейне", "They swim in the pool"],
-                [25, "sing", "петь", "We sing songs", "Мы поём песни", "We sing songs"],
-                [26, "dance", "танцевать", "She dances well", "Она хорошо танцует", "She dances well"],
-                [27, "help", "помогать", "He helps his friend", "Он помогает своему другу", "He helps his friend"],
-                [28, "find", "находить", "I find my keys", "Я нахожу свои ключи", "I find my keys"],
-                [29, "lose", "терять", "They lose the game", "Они проигрывают игру", "They lose the game"],
-                [30, "build", "строить", "We build a house", "Мы строим дом", "We build a house"],
-                [31, "break", "ломать", "He breaks the glass", "Он разбивает стакан", "He breaks the glass"],
-                [32, "fix", "чинить", "She fixes the car", "Она чинит машину", "She fixes the car"],
-                [33, "teach", "учить", "I teach children", "Я учу детей", "I teach children"],
-                [34, "learn", "изучать", "They learn new words", "Они изучают новые слова", "They learn new words"],
-            ],
+            resp: [],
             currentPage: 1,
             pageSize: 20,
             copySuccess: false,
+            csv: null,
+            words: [], 
         }
     },
     mounted() { 
         //this variable represents store, you can use all its actions as methods
-        this.textStore = useUserTextStore();
+        this.textStore = useUserTextStoreV();
+        this.resp = useAPIStore().data;
+        this.button = this.$refs.buttonRef;
+        this.fatchdata();
     },
     components: {
         BaseButton
@@ -75,6 +43,29 @@ export default {
         }
     },
     methods: {
+        async fatchdata() {
+            try {
+                const response = await fetch("http://127.0.0.1:8000/wordlist/post", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type' : 'application/json'
+                    },
+                    body: JSON.stringify(this.resp),
+                });
+                if (!response.ok) throw new Error(`Err: ${response.status}`)
+                const blob = await response.blob();
+                this.textStore.setCsv(blob);
+                // Parse CSV from blob
+                const text = await blob.text();
+                this.words = text.trim().split('\n').map(line => line.split(';'));
+                this.url = window.URL.createObjectURL(blob);
+                this.isGetResp = true;
+            
+            } catch (err) {
+                this.isErr = true;
+                console.log(err);
+            }
+        },
         goToFilterText() {
             //using Store variable to set user text
             router.push({name: "Filter"});
