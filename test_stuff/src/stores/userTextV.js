@@ -10,13 +10,9 @@ export const useUserTextStoreV = defineStore('userTextV', {
         noLearn: [], // dont want to learn
         countLearn: 0, // max amount of words in text
         known: [], // list of already known words
-        unknown: 0, // max amount of unknown words in sentence
-        csv: ""
+        unknown: 0 // max amount of unknown words in sentence
     }),
     actions: {
-        setCsv(csv) {
-            this.csv = csv;
-        },
         setText(text) {
             this.words = text;
         },

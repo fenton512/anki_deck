@@ -80,31 +80,19 @@ export default {
             let API = useAPIStore();
             API.setState(this.resp);
             router.push({name: "FinalPage"});
-        },
-        goFilter() {
-            router.push({name: "Filter"})
         }
     }
 }
 </script>
 
 <template>
-    <header>
-        <h2 @click="goFilter"><-- Вернуться к фильтрам</h2>
-    </header>
-    <main>
     <div class="main-container">
-        <div class="heading-row">
-        <div class="heading-group">
-            <div class="heading-text">Выделение слов</div>
-            <span class="question-mark" @mouseover="isVisiable = true" @mouseleave="isVisiable = false">?
-                <span v-if="isVisiable" class="user-hint">Кликни по карточке со словом, чтобы задать ей статус:<br>
-                        <span style="background-color: #71c686;">Зеленые карточки</span> – неизвестные слова<br>
-                        <span style="background-color: #B74747;">Красные карточки</span> – слова, которые ты не хочешь учить
-                    </span>
+        <h1>Выделение слов <span class="question-mark" @mouseover="isVisiable = true" @mouseleave="isVisiable = false">?
+            <span v-if="isVisiable" class="user-hint">Кликни по слову чтобы задать ему статус:<br><span style="background-color: #71c686;">Зеленые:</span>
+            неизвестные слова, которые ты хочешь учить<br>
+                <span style="background-color: #B74747;">Красные:</span> слова, которые ты не хочешь учить</span>
             </span>
-        </div>
-        </div>
+        </h1>
         <div class="text-area" >
             <span v-for="(word, index) in words">
             <span>{{word.extrChars[0]}}</span>
@@ -121,47 +109,9 @@ export default {
             <Basebutton class="start-generation" @click="startGeneration()">Начать генерацию</Basebutton>
         </div>
     </div>
-    </main>
 </template>
 
 <style scoped>
-    header h2 {
-        font-size: 15px;
-        font-weight: 100;
-    }
-    header h2:hover {
-        cursor: pointer;
-        text-decoration: underline;
-        text-decoration-color: #fff;
-        text-underline-offset: 4px;
-    }
-    .heading-text{
-        font-family: "Roboto", sans-serif;
-        font-optical-sizing: auto;
-        font-weight: 400;
-        font-style: normal;
-        font-variation-settings:      
-        "wdth" 100;
-        text-align: center;
-        font-size: 32px;
-    }
-    main {
-        margin: 0 px;
-        font-family: "Roboto", sans-serif;
-        font-optical-sizing: auto;
-        font-weight: 300;
-        font-style: normal;
-        color: white;
-    }
-    header {
-        font-family: "Inter", sans-serif;
-    }
-    header h2:hover {
-        cursor: pointer;
-        text-decoration: underline;
-        text-decoration-color: #fff;
-        text-underline-offset: 4px;
-    }
     .default{
         background-color: inherit;
     }
@@ -176,10 +126,6 @@ export default {
         flex-direction: column;
         align-items: center;
         height: 100%;
-        text-align: center;
-        width: 100%;
-        max-width: 700px;
-        margin: 0 auto;
     }
     .text-area{
         user-select: none;
@@ -190,29 +136,11 @@ export default {
         width: 100%;
         font-size: 22px;
         text-align:center;
-        min-height: 400px;
     }
-    .text-area span {
-        user-select: none;
-        pointer-events: none;
-    }
-    .text-area span[class] {
-        pointer-events: auto;
-        cursor: pointer;
-    }
-    .heading-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        margin-bottom: 10px;
-        position: relative;
-    }
-    .heading-text {
-        flex: 1;
-        text-align: center;
+    h1{
+        flex: 0 0 auto;
         font-size: 30px;
-        margin: 0;
+        position: relative;
     }
     .button-container{
         flex: 0 0 auto;
@@ -220,93 +148,39 @@ export default {
         /* height: 50%; */
     }
     .start-generation{
-        width: 255px;
-        height: 60px;
-        margin-top:20px;
-        border-radius: 0%;
+        height: 70%;
     }
     .text-area {
         scrollbar-width: thin;
         scrollbar-color: #888 var(--color-background);
         
     }
-    .text-area, .text-area * {
-        user-select: none !important;
+    .question-mark{
+        border: #888 solid;
+        border-radius: 24px;
+        display: inline-block;
+        width: 28px;
+        height: 28px;
+        text-align: center;
+        position: absolute;
+        top: 5px;
+        right: -42px;
+        font-size: 22px;
     }
-    .text-area ::selection, .text-area ::-moz-selection {
-        background: transparent;
+
+    .user-hint{
+        content: attr(data-text);
+        min-width: 400px;
+        z-index: 1;
+        background-color: var(--color-background);
+        position: absolute;
+        border-radius: 10px;
+        border: white solid;
+        border-width: 1px;
+        top: 35px;
+        font-size: 18px;
+        font-weight: 400;
+        left: 30px;
     }
-    .text-area {
-    user-select: none; /* Standard property */
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE/Edge */
-    
-    /* Optional: Prevent highlighting when clicking rapidly */
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* For the spans inside text-area */
-.text-area span {
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
-/* If you still see selection on click, add this */
-.text-area span[class] {
-    pointer-events: auto; /* Keep click events working */
-    cursor: pointer; /* Show pointer cursor */
-}
-    .heading-row {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.heading-group {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px; /* This controls the space between text and question mark */
-}
-
-.heading-text {
-  font-size: 30px;
-  margin: 0;
-  position: relative;
-}
-
-.question-mark {
-  border: 1px solid #888;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.user-hint {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  min-width: 400px;
-  background-color: var(--color-background);
-  border-radius: 10px;
-  border: 1px solid white;
-  padding: 10px;
-  font-size: 18px;
-  margin-top: 0;
-  z-index: 10;
-  margin-left:350px;
-  text-align: left;
-}
 
 </style>
