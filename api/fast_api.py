@@ -1,12 +1,16 @@
-import openai
+from openai import Timeout
 from fastapi import FastAPI, Query,Request
 from fastapi.responses import JSONResponse
 from sqlite3 import connect
+# from fastapi.staticfiles import StaticFiles
 from gpt import request_sentences, write_cards_to_csv, parse_response_to_dicts
 import os
 from fastapi.middleware.cors import CORSMiddleware
 from decryptors import *
 from pydantic import BaseModel
+from typing import List
+from Appearance import is_word_in_generated_sentences,validate_response_sentences
+import json
 from time import sleep
 
 app = FastAPI()
@@ -21,8 +25,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-# test comment
 @app.get("/")
 def root():
     return {"message": "FastAPI работает!"}
@@ -193,9 +195,10 @@ async def get_wordlist():
 
 
 class WordListRequest(BaseModel):
-    unknown_words: list[str]
-    known_words: list[str]
+    unknown_words: List[str]
+    known_words: List[str]
     count: int
+    context_sentences: List[str]
 
 
 @app.post("/wordlist/post", response_model=WordListRequest)
@@ -203,13 +206,27 @@ async def post_text(payload: WordListRequest):
     unknown_words = payload.unknown_words
     known_words = payload.known_words
     count = payload.count
-    while True:
-        try:
-            response_text = request_sentences(unknown_words, known_words, count)
-            return write_cards_to_csv(response_text)
-        except openai.APIStatusError as e:
-            sleep(60)
+    context_sentences = payload.context_sentences
 
+
+    words_to_generate = unknown_words.copy()
+    correct_rows = []
+    while words_to_generate:
+        response_text = request_sentences(words_to_generate, known_words, count,context_sentences)
+        rows = parse_response_to_dicts(response_text)
+        still_incorrect = []
+        for row in rows:
+            word = row["word"]
+            sentences = [row["sentence1"]]
+            if is_word_in_generated_sentences(word, sentences):
+                correct_rows.append(row)
+            else:
+                still_incorrect.append(word)
+        words_to_generate = still_incorrect
+    try:
+        return write_cards_to_csv(correct_rows)
+    except Timeout:
+        sleep(60)
 
 @app.options("/wordlist/post")
 async def options_wordlist_post(request: Request):

@@ -2,8 +2,10 @@
 import Basebutton from '@/components/Basebutton.vue';
 import { useAPIStore } from '@/stores/API';
 import { useUserTextStore } from '@/stores/userText';
+import { useUserTextStoreV } from '@/stores/userTextV';
 import { nextTick } from 'vue';
 import router from '@/router';
+import {shuffle} from '@/scripts/shuffle'
 
 export default {
     data() {    
@@ -22,7 +24,8 @@ export default {
             resp: {
                 unknown_words: [],
                 known_words: [],
-                count: 0
+                count: 0,
+                context_sentences: []
             },
         }
     },
@@ -75,22 +78,28 @@ export default {
             word.class = nextClass;
         },
         validateWords() {
-            let wordArr = useUserTextStore().text.split(/\s/);
-            this.wordList = wordArr.map((word) => {
-                let regex = /[a-zA-Z'`’-]+/;
-                let newWord = regex.exec(word);
-                if (newWord != null) {
-                    return {
-                    word: newWord[0],
-                    class: "default"
-                    }
-                }else {
-                    return {
-                        word: "BAD WORD",
-                        class: ""
-                    }
-                }
-            })
+            this.wordList = useUserTextStoreV().words;
+            this.wordList = shuffle(this.wordList);
+            // this.wordList.forEach(element => {
+            //     console.log(element)
+            // });
+            let sentenceIndex = 0;
+            // this.wordList = wordArr.map((word) => {
+            //     let currentIndex = sentenceIndex;
+            //     let regex = /[a-zA-Z'`’-]+/;
+            //     let newWord = regex.exec(word);
+            //     if (newWord != null) {
+            //         return {
+            //         word: newWord[0],
+            //         class: "default"
+            //         }
+            //     }else {
+            //         return {
+            //             word: "BAD WORD",
+            //             class: ""
+            //         }
+            //     }
+            // })
         },
         handleKeyDown(event){
             if (event.key === "ArrowRight") {
@@ -100,10 +109,12 @@ export default {
             }
         },
         startGen() {
+            let contextSentences = useUserTextStoreV().context;
             for (let word of this.wordList) {
                 switch (word.class) {
                     case "wantLearn":
                         this.resp.unknown_words.push(word.word);
+                        this.resp.context_sentences.push(contextSentences[word.sentenceIndex]);
                         break;
                     case "dontWantLearn":
                         this.resp.known_words.push(word.word);
@@ -146,7 +157,7 @@ export default {
                         v-for="word, index in wordList" 
                         :key="index" 
                         :class="['card', word.class]">
-                        {{word.word}}
+                        {{word.word.toLowerCase()}}
                     </div>
                 </div>
             </div>

@@ -143,6 +143,7 @@ You are presented with the whole text you've submitted.
 - By **one-time clicking** the word, you mark it green as want to learn
 - By **double clicking** the word, you mark it as read as don't want to learn
 - By **clicking thrice** you unmark the word
+- <img src = "./images/8.png" width = "1000" height = "1000"> <!--- Ручной ввод -->
 #### Word List
 Presents list of multiple word cards!
 Same as in manual:

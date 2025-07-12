@@ -1,10 +1,9 @@
 FROM node:20
 WORKDIR /app
-COPY . .
+COPY package*.json ./
 RUN npm install
+COPY . .
 RUN npm install pinia-plugin-persistedstate
-RUN npm run build
-# Serve with a simple static server (e.g., serve)
-RUN npm install -g serve
+
 EXPOSE 5173
-CMD ["serve", "-s", "dist", "-l", "5173"]
+CMD ["npm", "run", "dev"]
