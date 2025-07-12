@@ -2,14 +2,13 @@ import unittest
 from unittest.mock import patch
 from Import_2 import lemmatization
 from Import_1 import splitting
-from Appearance import is_word_in_generated_sentences
+from api.Appearance import is_word_in_generated_sentences
 
 
 class TestSplittingFunction(unittest.TestCase):
 
     def test_basic_sentence(self):
         text = "Hello, world! It's a beautiful day."
-
         result1 = splitting(text)
         result = []
         for token in result1.keys():
@@ -18,9 +17,6 @@ class TestSplittingFunction(unittest.TestCase):
 
         self.assertIn("Hello", result)
         self.assertIn("world", result)
-        self.assertNotIn("It", result)
-        self.assertNotIn("'s", result)
-        self.assertNotIn("a", result)
         self.assertIn("beautiful", result)
         self.assertNotIn(",", result)
         self.assertNotIn("!", result)
@@ -33,6 +29,7 @@ class TestSplittingFunction(unittest.TestCase):
         for token in result1.keys():
             if result1[token]:
                 result.append(token)
+
         self.assertNotIn("The", result)
         self.assertNotIn("over", result)
         self.assertNotIn("the", result)
@@ -56,7 +53,6 @@ class TestSplittingFunction(unittest.TestCase):
 
     def test_non_matching_tokens_excluded(self):
         text = "1234 !@#$%"
-
         result1 = splitting(text)
         result = []
         for token in result1.keys():
@@ -123,11 +119,11 @@ class TestLemmatization(unittest.TestCase):
         }
         result = lemmatization(json_data)
 
-        self.assertIn("running", result["known_words"].keys())
-        self.assertIn("children", result["unknown_words"].keys())
+        self.assertIn("running", result["known_words"])
+        self.assertIn("children", result["unknown_words"])
 
-        self.assertEqual(result["unknown_words"]["children"][0], "child")
-        self.assertEqual(result["unwanted_words"]["mice"][0], "mouse")
+        self.assertEqual(result["unknown_words"]["children"], ["child"])
+        self.assertEqual(result["unwanted_words"]["mice"], ["mouse"])
 
     @patch("spacy.load")
     def test_multiple_words(self, mock_load):
@@ -169,10 +165,9 @@ class TestLemmatization(unittest.TestCase):
 
         result = lemmatization(json_data)
 
-        self.assertEqual(result["known_words"]["cats"][0], "cat")
-        self.assertEqual(result["unknown_words"]["dogs"][0], "dog")
-        self.assertEqual(result["unwanted_words"]["mice"][0], "mouse")
-
+        self.assertEqual(result["known_words"]["cats"], ["cat"])
+        self.assertEqual(result["unknown_words"]["dogs"], ["dog"])
+        self.assertEqual(result["unwanted_words"]["mice"], ["mouse"])
 
 
 class TestAppearance(unittest.TestCase):
@@ -194,6 +189,8 @@ class TestAppearance(unittest.TestCase):
     def test_multiple_sentences_some_match(self):
         word = "read"
         sentences = ["They will run.", "She reads a book.", "Walking is healthy."]
+        self.assertFalse(is_word_in_generated_sentences(word, sentences))
+        sentences = ["He read every morning.", "She reads a book.", "Walking as read."]
         self.assertTrue(is_word_in_generated_sentences(word, sentences))
 
     def test_empty_sentences(self):

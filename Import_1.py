@@ -4,9 +4,6 @@ from spacy.util import compile_prefix_regex, compile_infix_regex, compile_suffix
 from spacy.matcher import PhraseMatcher
 import re
 
-#fastapi s s
- 
-
 def splitting(str_text):
     nlp = spacy.load("en_core_web_sm")#magic model for English language processing
     pattern = re.compile(r"^[a-zA-Z]+([-'][a-zA-Z]+)*$")# Regex pattern to match words
@@ -103,11 +100,11 @@ def splitting(str_text):
 
     for token in doc:
         tokenized.append(token.text)
-        
+
         if token.is_punct or token.is_stop or not pattern.match(token.text.replace(" ", "")):
             continue
         clickable.append(token.text)
-    
+
     for token in tokenized:
         if token not in export:
             if token in clickable:
