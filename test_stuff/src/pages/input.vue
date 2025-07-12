@@ -17,7 +17,7 @@ export default {
         }
     },
     mounted() {
-        // this.fatchdata() 
+        // this.fatchdata();
         //this variable represents store, you can use all its actions as methods
         this.textStoreV = useUserTextStoreV();
         this.textStore = useUserTextStore();
@@ -29,11 +29,11 @@ export default {
     //this function is not need and should be deleted later
     //when all features on this page will be finished
         async fatchdata() {
-            this.pickWords();
-            const resp = { // add
-                unknown_words: ["kill","survive","climb"],
+            this.pickWords();            const resp = { // add
+                unknown_words: ["give","survive","climb"],
                 known_words:["dog","cat","emansipation","Russia"],
-                count:6
+                count:6,
+                context_sentences: ["I will never give up", "He will survive", "This mount is too high to climb"],
             };
             const response = await fetch("http://127.0.0.1:8000/wordlist/post", {
                 method: "POST",
@@ -68,8 +68,41 @@ export default {
             div.innerHTML = "Proccessing...";
         },
         goToFilter() {
-            const words = this.userText.trim().split(/\s+/).filter(word => word.length > 0);
+            const regex = /[a-zA-Z'`’-]+/;
+            const endSentenctRegexp = /[!?\.]+/;
+            let sentenceIndex = 0;
+            let prevWord = "";
+            let words = this.userText.split(/(\s+|\n)/)
+                                        .map((word) => {
+                                            let currentIndex = sentenceIndex;
+                                            let endOfSentance = endSentenctRegexp.exec(word);
+                                            if (endOfSentance != null) {
+                                                sentenceIndex++;
+                                            }
+                                            if (word == "\n" && endSentenctRegexp.exec(prevWord) == null) {
+                                                sentenceIndex++;
+                                            }
+                                            let newWord = regex.exec(word);
+                                            prevWord = word
+                                            if (newWord != null) {
+                                                return {
+                                                    word: newWord[0],
+                                                    sentenceIndex: currentIndex,
+                                                    class: "default"
+                                                    }
+                                            } else {
+                                                return {word: ''};
+                                            }
+                                        })
+                                        .filter((word) =>  word.word.length > 2);
+            words = this.toSet(words);
             const wordCount = words.length;
+            let sentences = this.userText.split(/[\.!?\n]+/)
+                                    .filter((sentance) => sentance.length > 0)
+                                    .map((sentance) => {
+                                    return sentance.trim();
+                                    });
+                            
 
             if (wordCount < 5) {
                 alert('Пожалуйста, введите как минимум 5 слов.');
@@ -83,11 +116,23 @@ export default {
             else {
                 this.textStoreV.setText(words);
                 this.textStore.setText(this.userText);
+                this.textStoreV.setContext(sentences);
                 router.push({name: "Filter"})
             }
         },
         goBack() {
             router.push({name: "Welcom"})
+        },
+        toSet(array) {
+            let map = new Map()
+            let newArr = [];
+            for (let word of array) {
+                if (map.has(word.word))
+                    continue;
+                newArr.push(word);
+                map.set(word.word, 0);
+            }
+            return newArr;
         }
     },
     watch: {

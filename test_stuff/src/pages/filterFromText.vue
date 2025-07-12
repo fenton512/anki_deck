@@ -15,14 +15,22 @@ export default {
             resp: {
                 unknown_words: [],
                 known_words: [],
-                count: 0
+                count: 0,
+                context_sentences: []
             },
+            sentences: []
         }
     },
     mounted() {
         this.textStore = useUserTextStore();
         //after rendering get data from store
         this.text = this.textStore.text;
+        console.log(this.text);
+        this.sentences = this.text.split(/[\.!?\n]+/)
+                                    .filter((sentance) => sentance.length > 0)
+                                    .map((sentance) => {
+                                    return sentance.trim();
+                                    });
         this.textArea = document.getElementsByClassName("textarea")[0];
         this.validateWords();
     },
@@ -32,14 +40,25 @@ export default {
     methods: {
         validateWords() {
             let wordsArr = this.text.trim().split(/(\s+)/);
+            let sentenceIndex = 0;
+            let prevWord = "";
             this.words = wordsArr.map((word) => {
+                let currentIndex = sentenceIndex;
+                let endOfSentance = /[!?\.]+/.exec(word);
+                if (endOfSentance != null) {
+                    sentenceIndex++
+                }
                 if (word == '\n') {
+                    if (/[!?\.]+/.exec(prevWord) == null)
+                        sentenceIndex++;
                     return {
                         word: '',
                         extrChars:['', '\n'],
                         class: "default"
                     }
                 }
+                prevWord = word;
+
                 let regex = /[a-zA-Z'`’-]+/;
                 let newWord = regex.exec(word);
                 if (newWord != null) {
@@ -48,7 +67,8 @@ export default {
                     extrChars: newWord.index == 0 ? 
                         ['', `${word.substring(newWord[0].length)} `] : 
                         [word.substring(0, newWord.index), `${word.substring(newWord.index + newWord[0].length)} `],
-                    class: "default"
+                    class: "default",
+                    sentenceIndex: currentIndex
                     }
                 } else {
                     return {
@@ -71,10 +91,12 @@ export default {
                 switch (word.class) {
                     case "wantLearn":
                         this.resp.unknown_words.push(word.word);
+                        this.resp.context_sentences.push(this.sentences[word.sentenceIndex]);
                         break;
                     case "neverLearn":
+
                         this.resp.known_words.push(word.word);
-                        break;
+                    break;
                 }
             }
             let API = useAPIStore();

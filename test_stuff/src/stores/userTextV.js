@@ -10,7 +10,8 @@ export const useUserTextStoreV = defineStore('userTextV', {
         noLearn: [], // dont want to learn
         countLearn: 0, // max amount of words in text
         known: [], // list of already known words
-        unknown: 0 // max amount of unknown words in sentence
+        unknown: 0, // max amount of unknown words in sentence
+        context: [] //source sentences from original text
     }),
     actions: {
         setText(text) {
@@ -30,6 +31,9 @@ export const useUserTextStoreV = defineStore('userTextV', {
         },
         setUnknown(unknown) {
             this.unknown = unknown;
+        },
+        setContext(context) {
+            this.context = context;
         },
         resetStore() {
             this.words = [];

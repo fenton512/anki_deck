@@ -9,7 +9,7 @@ from decryptors import *
 from pydantic import BaseModel
 from typing import List
 from Appearance import is_word_in_generated_sentences,validate_response_sentences
-
+import json
 
 app = FastAPI()
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -136,23 +136,23 @@ class WordListRequest(BaseModel):
     unknown_words: List[str]
     known_words:List[str]
     count: int
+    context_sentences: List[str]  
 
 @app.post("/wordlist/post")
 async def post_text(payload: WordListRequest):
     unknown_words = payload.unknown_words
     known_words = payload.known_words
     count = payload.count
-
+    context_sentences = payload.context_sentences
     words_to_generate = unknown_words.copy()
     correct_rows = []
-
     while words_to_generate:
-        response_text = request_sentences(words_to_generate, known_words, count)
+        response_text = request_sentences(words_to_generate, known_words, count,context_sentences)
         rows = parse_response_to_dicts(response_text)
         still_incorrect = []
         for row in rows:
             word = row["word"]
-            sentences = [row["sentence1"], row["sentence2"], row["sentence3"]]
+            sentences = [row["sentence1"]]
             if is_word_in_generated_sentences(word, sentences):
                 correct_rows.append(row)
             else:
