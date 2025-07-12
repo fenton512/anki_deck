@@ -161,6 +161,7 @@ export default {
     }
     header {
         font-family: "Inter", sans-serif;
+
     }
     .header {
         font-family: "Roboto", sans-serif;
